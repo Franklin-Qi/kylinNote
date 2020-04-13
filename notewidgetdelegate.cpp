@@ -91,7 +91,7 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 {
     //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     QStyleOptionViewItem opt = option;
-    opt.rect.setWidth(option.rect.width() - m_rowRightOffset);
+    opt.rect.setWidth(option.rect.width() - m_rowRightOffset);      //678
 
     int currentFrame = m_timeLine->currentFrame();
     //qDebug() << "currentFrame" << currentFrame;  //0
@@ -120,23 +120,12 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     case Normal:
         break;
     }
+
     //第一层
     painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter->setBrush(QBrush(QColor(0, 0, 0)));
+    painter->setBrush(QBrush(QColor(0, 170, 255)));   //0, 170, 255
     painter->setPen(Qt::transparent);
-    {
-        QPainterPath painterPath;
-        painterPath.addRoundedRect(opt.rect, 0, 0);
-        painter->drawPath(painterPath);
-    }
-
-
-
-    //第二层
-    painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter->setBrush(QBrush(QColor(43, 49, 56)));
-    painter->setPen(Qt::transparent);
-    opt.rect.setWidth(704);
+    opt.rect.setWidth(678);
     opt.rect.setHeight(opt.rect.height() - 10);
     {
         QPainterPath painterPath;
@@ -144,22 +133,22 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
         painter->drawPath(painterPath);
     }
 
+    //第二层
+    painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    painter->setBrush(QBrush(QColor(43, 49, 56)));  //43, 49, 56
+    painter->setPen(Qt::transparent);
+
+    opt.rect.setWidth(678);//5
+    opt.rect.setHeight(opt.rect.height() - 0);
+    opt.rect.setLeft(opt.rect.left() + 5);
+    {
+        QPainterPath painterPath;
+        painterPath.addRoundedRect(opt.rect, 0, 0);
+        painter->drawPath(painterPath);
+    }
 
     paintBackground2(painter, opt, index);
     paintLabels(painter, option, index);
-
-
-    painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter->setBrush(QBrush(QColor(0, 170, 255)));
-    painter->setPen(Qt::transparent);
-
-    opt.rect.setWidth(5);
-    opt.rect.setHeight(opt.rect.height() - 0);
-    {
-        QPainterPath painterPath;
-        painterPath.addRoundedRect(opt.rect, 7, 7);
-        painter->drawPath(painterPath);
-    }
 
 }
 
@@ -205,7 +194,7 @@ void NoteWidgetDelegate::paintBackground2(QPainter *painter, const QStyleOptionV
                 painter->setBrush(QBrush(m_selectColor));
                 painter->setPen(Qt::transparent);
                 QPainterPath painterPath;
-                painterPath.addRoundedRect(opt.rect, 7, 7);
+                painterPath.addRoundedRect(opt.rect, 0, 0);
                 painter->drawPath(painterPath);
                 //painter->fillRect(option.rect, QBrush(m_ActiveColor));//浅蓝
             }else{
@@ -213,7 +202,7 @@ void NoteWidgetDelegate::paintBackground2(QPainter *painter, const QStyleOptionV
                 painter->setBrush(QBrush(m_selectColor));
                 painter->setPen(Qt::transparent);
                 QPainterPath painterPath;
-                painterPath.addRoundedRect(opt.rect, 7, 7);
+                painterPath.addRoundedRect(opt.rect, 0, 0);
                 painter->drawPath(painterPath);
                 //painter->fillRect(option.rect, QBrush(m_notActiveColor));//深蓝
             }
@@ -223,7 +212,7 @@ void NoteWidgetDelegate::paintBackground2(QPainter *painter, const QStyleOptionV
             painter->setBrush(QBrush(m_defaultColor));
             painter->setPen(Qt::transparent);
             QPainterPath painterPath;
-            painterPath.addRoundedRect(opt.rect, 7, 7);
+            painterPath.addRoundedRect(opt.rect, 0, 0);
             painter->drawPath(painterPath);
             //painter->fillRect(option.rect, QBrush(m_defaultColor));//
         }
@@ -236,7 +225,7 @@ void NoteWidgetDelegate::paintBackground2(QPainter *painter, const QStyleOptionV
         painter->setBrush(QBrush(m_hoverColor));
         painter->setPen(Qt::transparent);
         QPainterPath painterPath;
-        painterPath.addRoundedRect(opt.rect, 7, 7);
+        painterPath.addRoundedRect(opt.rect, 0, 0);
         painter->drawPath(painterPath);
         //painter->fillRect(option.rect, QBrush(m_hoverColor));//灰色
     //当前item未选中 未悬停时颜色

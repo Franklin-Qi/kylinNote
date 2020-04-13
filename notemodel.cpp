@@ -15,6 +15,7 @@ NoteModel::~NoteModel()
 QModelIndex NoteModel::addNote(NoteData* note)
 {
     const int rowCnt = rowCount();
+    //指定要插入的第一行和最后一行新行的行号，以及其父项的模型索引
     beginInsertRows(QModelIndex(), rowCnt, rowCnt);
     m_noteList << note;
     endInsertRows();
@@ -72,8 +73,11 @@ bool NoteModel::moveRow(const QModelIndex &sourceParent, int sourceRow, const QM
 
         return false;
     }
-
+    //参数1 QSortFilterProxyModel
+    //参数2和参数3是要移动的行的第一行和最后一行,将参数2 参数3 所在行 移动到 destinationChild 之上
+    //参数4 QAbstractListModel 索引对应于在其中这些行被移动的父
     beginMoveRows(sourceParent,sourceRow,sourceRow,destinationParent,destinationChild);
+    //将 sourceRow item 移动到 destinationChild item位置, destinationChild item依次前移
     m_noteList.move(sourceRow,destinationChild);
     endMoveRows();
 
@@ -87,6 +91,7 @@ void NoteModel::clearNotes()
     endResetModel();
 }
 
+//负责返回数据项对应于所述索引参数
 QVariant NoteModel::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_noteList.count())
@@ -112,6 +117,7 @@ QVariant NoteModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+//provide a way for the delegate to set the data in the model
 bool NoteModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!index.isValid())
@@ -153,6 +159,7 @@ Qt::ItemFlags NoteModel::flags(const QModelIndex &index) const
     return QAbstractListModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsEditable ;
 }
 
+//保持模型中的行数与字符串列表中的字符串数相同
 int NoteModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
@@ -165,9 +172,18 @@ void NoteModel::sort(int column, Qt::SortOrder order)
     Q_UNUSED(column)
     Q_UNUSED(order)
 
-    std::stable_sort(m_noteList.begin(), m_noteList.end(), [](NoteData* lhs, NoteData* rhs){
-        return lhs->lastModificationdateTime() > rhs->lastModificationdateTime();
-    });
+    if(order == Qt::AscendingOrder)
+    {
+        std::stable_sort(m_noteList.begin(), m_noteList.end(), [](NoteData* lhs, NoteData* rhs){
+            return lhs->lastModificationdateTime() > rhs->lastModificationdateTime();
+        });
+    }else if(order == Qt::DescendingOrder)
+    {
+        std::stable_sort(m_noteList.begin(), m_noteList.end(), [](NoteData* lhs, NoteData* rhs){
+            return lhs->lastModificationdateTime() < rhs->lastModificationdateTime();
+        });
+    }
+
 
     emit dataChanged(index(0), index(rowCount()-1));
 }

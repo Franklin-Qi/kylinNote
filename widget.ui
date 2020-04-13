@@ -337,8 +337,7 @@ selection-background-color:rgba(72,72,76,1);</string>
    <item>
     <widget class="QListView" name="listView">
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(19,20,20);
-selection-background-color:rgba(72,72,76,1);</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -367,7 +366,7 @@ selection-background-color:rgba(72,72,76,1);</string>
 color: rgb(126, 126, 126);</string>
          </property>
          <property name="text">
-          <string>共200条记录</string>
+          <string/>
          </property>
         </widget>
        </item>

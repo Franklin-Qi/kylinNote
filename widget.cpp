@@ -15,6 +15,8 @@ Widget::Widget(QWidget *parent) :
   , m_ukui_SearchLine(Q_NULLPTR)
   , m_newKynote(Q_NULLPTR)
   , m_trashButton(Q_NULLPTR)
+  , m_countLabel(Q_NULLPTR)
+  , m_sortLabel(Q_NULLPTR)
   , m_noteView(Q_NULLPTR)
   , m_noteModel(new NoteModel(this))
   , m_deletedNotesModel(new NoteModel(this))
@@ -93,12 +95,12 @@ void Widget::setupModelView()
 {
     m_noteView = static_cast<NoteView*>(ui->listView);
     m_proxyModel->setSourceModel(m_noteModel);          //代理真正的数据模型，对数据进行排序和过滤
-    m_proxyModel->setFilterKeyColumn(0);                //此属性保存用于读取源模型内容的键的列
+    m_proxyModel->setFilterKeyColumn(0);                //此属性保存用于读取源模型内容的键的列,listview只有一列所以是0
     m_proxyModel->setFilterRole(NoteModel::NoteContent);//此属性保留项目角色，该角色用于在过滤项目时查询源模型的数据
     m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);//
 
     m_noteView->setItemDelegate(new NoteWidgetDelegate(m_noteView));    //安装定制delegate提供编辑功能
-    m_noteView->setModel(m_proxyModel);
+    m_noteView->setModel(m_proxyModel);//设置view的model是proxyModel，proxyModel作为view和QAbstractListModel的桥梁
 }
 
 void Widget::initializeSettingsDatabase()
@@ -177,9 +179,12 @@ void Widget::error_throw()
 
 void Widget::ukui_init()
 {
+    sortflag = 1;
     m_ukui_SearchLine = ui->SearchLine;
     m_newKynote = ui->newKynote;
     m_trashButton = ui->add_more_btn;
+    m_countLabel = ui->label;
+    m_sortLabel = ui->sort_btn;
 
     m_trashButton->setToolTip(QStringLiteral("Delete Selected Note"));
     m_newKynote->setToolTip(QStringLiteral("Create New Note"));
@@ -246,6 +251,8 @@ void Widget::ukui_conn()
     connect(m_newKynote,&QPushButton::clicked, this, &Widget::newSlot);
     //删除按钮
     connect(m_trashButton, &QPushButton::clicked, this, &Widget::onTrashButtonClicked);
+    //升/降序按钮
+    connect(m_sortLabel,&QPushButton::clicked,this,&Widget::sortSlot);
     //搜索栏文本输入
     connect(m_ukui_SearchLine, &QLineEdit::textChanged, this, &Widget::onSearchEditTextChanged);
     //listview单击事件
@@ -267,7 +274,6 @@ void Widget::ukui_conn()
 //    connect(ui->searchClearButton,&QPushButton::clicked,this,[=]{
 //        ui->ukui_SearchLine->setText("");
 //    });
-    qDebug() << "connect end";
 
     // auto save timer
     connect(m_autoSaveTimer, &QTimer::timeout, [this](){
@@ -297,11 +303,6 @@ void Widget::ukui_conn()
             m_dbManager, &DBManager::onForceLastRowIndexValueRequested, Qt::BlockingQueuedConnection);
 
     connect(m_dbManager, &DBManager::notesReceived, this, &Widget::loadNotes);
-}
-
-void Widget::getFileModifyTime(QString fileInfo)
-{
-
 }
 
 void Widget::checkMigration()
@@ -574,8 +575,11 @@ void Widget::createNewNoteIfEmpty()
 
 void Widget::loadNotes(QList<NoteData *> noteList, int noteCounter)
 {
+    //排序
     if(!noteList.isEmpty()){
         m_noteModel->addListNote(noteList);
+        //Qt::AscendingOrder 升序排序
+        //参见 NoteModel::sort
         m_noteModel->sort(0,Qt::AscendingOrder);
     }
 
@@ -584,6 +588,7 @@ void Widget::loadNotes(QList<NoteData *> noteList, int noteCounter)
     // TODO: move this from here
     createNewNoteIfEmpty();
     selectFirstNote();
+    m_countLabel->setText(QObject::tr("%1 records in total").arg(m_proxyModel->rowCount()));
 }
 
 void Widget::moveNoteToTop()
@@ -595,15 +600,22 @@ void Widget::moveNoteToTop()
         m_noteView->scrollToTop();
 
         // move the current selected note to the top
+        //当前要移动到顶端的item QSortFilterProxyModel
         QModelIndex sourceIndex = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
+
+        //目前顶端的item QAbstractListModel
         QModelIndex destinationIndex = m_noteModel->index(0);
+
+        //将 sourceIndex.row() 移动到第0行,第0行变第一行
         m_noteModel->moveRow(sourceIndex, sourceIndex.row(), destinationIndex, 0);
 
-        // update the current item
+        // 更新当前 最顶端QAbstractListModel item 并添加代理
         m_currentSelectedNoteProxy = m_proxyModel->mapFromSource(destinationIndex);
+
+        //修改当前选中
         m_noteView->setCurrentIndex(m_currentSelectedNoteProxy);
     }else{
-        qDebug() << "MainWindow::moveNoteTop : m_currentSelectedNoteProxy not valid";
+        qDebug() << "Widget::moveNoteTop : m_currentSelectedNoteProxy not valid";
     }
 }
 
@@ -619,9 +631,11 @@ QString Widget::getFirstLine(const QString& str)
 
 void Widget::findNotesContain(const QString& keyword)
 {
+    //将用于过滤源模型内容的固定字符串设置为给定模式
     m_proxyModel->setFilterFixedString(keyword);
     //m_clearButton->show();
 
+    //如果匹配到不止一行
     if(m_proxyModel->rowCount() > 0){
         selectFirstNote();
     }else{
@@ -825,7 +839,7 @@ void Widget::newSlot()
     //新建一个笔记本
     m_notebook =  new Edit_page(this);
     m_notebook->show();
-
+    m_notebook->ui->textEdit->setFocus();
 
     //如果搜索栏有内容,则在新建便签时清空
     if(!m_ukui_SearchLine->text().isEmpty())
@@ -844,6 +858,7 @@ void Widget::newSlot()
     }
 
     this->createNewNote();
+    m_countLabel->setText(QObject::tr("%1 records in total").arg(m_proxyModel->rowCount()));
     connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));
 }
 
@@ -852,6 +867,8 @@ void Widget::onTrashButtonClicked()
     m_trashButton->blockSignals(true);
     deleteSelectedNote();
     m_trashButton->blockSignals(false);
+
+    m_countLabel->setText(QObject::tr("%1 records in total").arg(m_proxyModel->rowCount()));
 }
 
 void Widget::listClickSlot()
@@ -876,9 +893,6 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
 {
     qDebug() << "listDoubleClickSlot(const QModelIndex& index)" << index;
     m_notebook =  new Edit_page(this);
-    m_notebook->show();
-    m_editors.push_back(m_notebook);
-
 
     if(sender() != Q_NULLPTR){
         //获取当前选中item下标
@@ -887,6 +901,13 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
         m_noteView->setCurrentRowActive(false);
     }
 
+    //设置鼠标焦点
+    m_notebook->ui->textEdit->setFocus();
+    //移动光标至行末
+    m_notebook->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+
+    m_notebook->show();
+    m_editors.push_back(m_notebook);
 
     connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));
 }
@@ -950,6 +971,7 @@ void Widget::onSearchEditTextChanged(const QString& keyword)
                 m_selectedNoteBeforeSearchingInSource = QModelIndex();
             }else{
                 m_noteView->setFocusPolicy(Qt::NoFocus);
+                //过滤
                 findNotesContain(str);
             }
         }
@@ -959,5 +981,29 @@ void Widget::onSearchEditTextChanged(const QString& keyword)
     }
 
     //highlightSearch();
+}
+
+void Widget::sortSlot()
+{
+    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+    //排序
+    //if(!noteList.isEmpty()){
+        //m_noteModel->addListNote(noteList);
+        //Qt::AscendingOrder 升序排序
+        //参见 NoteModel::sort
+    if(m_proxyModel->rowCount())
+    {
+        if(sortflag)
+        {
+            m_noteModel->sort(0,Qt::DescendingOrder);
+            sortflag = 0;
+
+        }else
+        {
+            m_noteModel->sort(0,Qt::AscendingOrder);
+            sortflag = 1;
+        }
+
+    }
 }
 

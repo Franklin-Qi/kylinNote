@@ -85,7 +85,8 @@ private:
     QPixmap pixmap9;
     QPixmap pixmap10;
     QPixmap pixmap11;
-    int listflag ;                                  //平铺/展开列表切换
+    int listflag;                                  //平铺/展开列表切换
+    int sortflag;                                  //升降序切换
     tanchuang* tuichu;
 
 
@@ -95,6 +96,8 @@ private:
     QLineEdit* m_ukui_SearchLine;                   //搜索栏
     QPushButton* m_newKynote;                       //新建按钮
     QPushButton* m_trashButton;                     //删除按钮
+    QLabel* m_countLabel;                           //item记数
+    QPushButton* m_sortLabel;                       //升/降序按钮
     NoteView* m_noteView;
     NoteModel* m_noteModel;                         //
     NoteModel* m_deletedNotesModel;
@@ -118,7 +121,7 @@ private:
     void sqlInit();                                 //加载数据库
     void sqlAddItem();                              //插入数据库，同步插入item
     void sqlUpdateItem();                           //同步数据库，同步更新item
-    void getFileModifyTime(QString fileInfo);       //获取文件创建时间、修改时间
+
 
 
     //void InitData();
@@ -160,9 +163,9 @@ private slots:
     void editSlot();                                //编辑按钮槽函数
     void newSlot();                                 //新建按钮槽函数
     void listClickSlot();                           //item点击事件槽函数
-    void listDoubleClickSlot(const QModelIndex &);                     //item双击事件槽函数
+    void listDoubleClickSlot(const QModelIndex &);  //item双击事件槽函数
     void lineeditChangedSlot(const QString &text);  //搜索栏清空按钮显示
-
+    void sortSlot();      //升/降序槽函数
 
     //void loadNotes(QList<NoteData *> noteList, int noteCounter);
 
