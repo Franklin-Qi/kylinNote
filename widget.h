@@ -64,7 +64,8 @@ public:
 
 private:
     Ui::Widget *ui;                                 //主ui
-    Edit_page *m_notebook;                   //笔记本类指针
+    Edit_page *m_notebook;                   //新建便签指针
+    std::vector<Edit_page*> m_Listnote;                   //便签列表笔记
     void set_table_list_page_attribute();
     void set_tablewidget();
     void set_listwidget();
@@ -111,6 +112,7 @@ private:
     int m_noteCounter;
     int m_trashCounter;
     bool m_isContentModified;                       //便签内容是否修改
+    bool m_isColorModified;                         //便签颜色是否修改
     bool m_isTemp;
     bool m_isOperationRunning;
 
@@ -154,6 +156,7 @@ private slots:
     void InitData();
     void loadNotes(QList<NoteData *> noteList, int noteCounter);
     void onTextEditTextChanged();
+    void onColorChanged(const QColor &color);
     void onTrashButtonClicked();
     void onNotePressed(const QModelIndex &index);
     void onSearchEditTextChanged(const QString& keyword);

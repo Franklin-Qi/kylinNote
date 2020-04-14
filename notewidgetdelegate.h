@@ -36,6 +36,9 @@ public:
     void setRowRightOffset(int rowRightOffset);
     void setActive(bool isActive);
 
+    int qcolorToInt(const QColor &color) const;
+    QColor intToQcolor(int &intColor) const;
+
 private:
     void paintBackground(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index)const;
     void paintBackground2(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index)const;
@@ -55,6 +58,7 @@ private:
     QColor m_applicationInactiveColor;
     QColor m_separatorColor;
     QColor m_defaultColor;
+    QColor m_noteColor;
     int m_rowHeight;
     int m_maxFrame;
     int m_rowRightOffset;

@@ -24,6 +24,7 @@ Widget::Widget(QWidget *parent) :
   , m_dbManager(Q_NULLPTR)
   , m_dbThread(Q_NULLPTR)
   , m_isContentModified(false)
+  , m_isColorModified(false)
 {    
     translator = new QTranslator;
     QLocale locale;
@@ -83,11 +84,6 @@ void Widget::InitData()
 
     } else {
         emit requestNotesList();
-    }
-
-    /// Check if it is running with an argument (ex. hide)
-    if (qApp->arguments().contains(QStringLiteral("--autostart"))) {
-        //setMainWindowVisibility(false);
     }
 }
 
@@ -456,15 +452,15 @@ void Widget::deleteSelectedNote()
 
 void Widget::onNotePressed(const QModelIndex& index)
 {
-    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+    //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     if(sender() != Q_NULLPTR){
         QModelIndex indexInProxy = m_proxyModel->index(index.row(), 0);
         if(indexInProxy.isValid()){
             // save the position of text edit scrollbar
             if(!m_isTemp && m_currentSelectedNoteProxy.isValid()){
                 //int pos = m_textEdit->verticalScrollBar()->value();
-                qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-                qDebug() << m_currentSelectedNoteProxy;
+                //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+                //qDebug() << m_currentSelectedNoteProxy;
                 QModelIndex indexSrc = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
                 //m_noteModel->setData(indexSrc, QVariant::fromValue(pos), NoteModel::NoteScrollbarPos);
             }
@@ -488,12 +484,13 @@ void Widget::onNotePressed(const QModelIndex& index)
             m_noteView->setCurrentIndex(m_currentSelectedNoteProxy);
             m_noteView->scrollTo(m_currentSelectedNoteProxy);
         }else{
-            qDebug() << "MainWindow::selectNote() : indexInProxy is not valid";
+            qDebug() << "Widget::selectNote() : indexInProxy is not valid";
         }
         m_noteView->setCurrentRowActive(false);
     }
 }
 
+//双击选中笔记
 void Widget::selectNote(const QModelIndex &noteIndex)
 {
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
@@ -528,7 +525,7 @@ void Widget::selectNote(const QModelIndex &noteIndex)
         m_noteView->setCurrentIndex(m_currentSelectedNoteProxy);
         m_noteView->scrollTo(m_currentSelectedNoteProxy);
     }else{
-        qDebug() << "MainWindow::selectNote() : noteIndex is not valid";
+        qDebug() << "Widget::selectNote() : noteIndex is not valid";
     }
 }
 
@@ -537,20 +534,23 @@ void Widget::showNoteInEditor(const QModelIndex &noteIndex)
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     //m_textEdit->blockSignals(true);
 
-    /// fixing bug #202
-    //m_textEdit->setTextBackgroundColor(QColor(255,255,255, 0));
-
-
     QString content = noteIndex.data(NoteModel::NoteContent).toString();
     QDateTime dateTime = noteIndex.data(NoteModel::NoteLastModificationDateTime).toDateTime();
     int scrollbarPos = noteIndex.data(NoteModel::NoteScrollbarPos).toInt();
+//    int editcolor = noteIndex.data(NoteModel::NoteColor).toInt();
+//    const NoteWidgetDelegate delegate;
+//    QColor m_color = delegate.intToQcolor(editcolor);
+//    QPalette pal(m_notebook->ui->widget->palette());
+//    qDebug() << "m_color = delegate.intToQcolor(editcolor);" << m_color;
 
-    // set text and date
+    // set text and background
     m_notebook->ui->textEdit->setText(content);
     QString noteDate = dateTime.toString(Qt::ISODate);
     QString noteDateEditor = getNoteDateEditor(noteDate);
-    // set scrollbar position
-    //m_textEdit->verticalScrollBar()->setValue(scrollbarPos);
+//    pal.setColor(QPalette::Background,m_color);
+//    m_notebook->ui->widget->setAutoFillBackground(true);
+//    m_notebook->ui->widget->setPalette(pal);
+
     //m_textEdit->blockSignals(false);
 
     //highlightSearch();
@@ -584,7 +584,7 @@ void Widget::loadNotes(QList<NoteData *> noteList, int noteCounter)
     }
 
     m_noteCounter = noteCounter;
-
+    qDebug() << "noteCounter" << noteCounter;
     // TODO: move this from here
     createNewNoteIfEmpty();
     selectFirstNote();
@@ -729,6 +729,25 @@ void Widget::onTextEditTextChanged()
     }
 }
 
+void Widget::onColorChanged(const QColor &color)
+{
+    qDebug() << "receive signal onColorChanged";
+    if(m_currentSelectedNoteProxy.isValid()){
+        const NoteWidgetDelegate delegate;
+        int m_color = delegate.qcolorToInt(color);
+        qDebug () << "m_color" << m_color;
+        QMap<int, QVariant> dataValue;
+        dataValue[NoteModel::NoteColor] = QVariant::fromValue(m_color);
+
+        QModelIndex index = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
+        m_noteModel->setItemData(index, dataValue);
+        qDebug() << "m_currentSelectedNoteProxy" << m_currentSelectedNoteProxy.data(NoteModel::NoteColor).toInt();
+        m_isColorModified = true;
+        m_autoSaveTimer->start(500);
+    }
+    m_isTemp = false;
+}
+
 void Widget::exitSlot(){
     tuichu = new tanchuang(this);
     tuichu->show();
@@ -758,6 +777,14 @@ void Widget::saveNoteToDB(const QModelIndex& noteIndex)
             emit requestCreateUpdateNote(note);
 
         m_isContentModified = false;
+    }else if(noteIndex.isValid() && m_isColorModified)
+    {
+        //从排序过滤器模型返回与给定 noteIndex 对应的源模型索引。
+        QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
+        NoteData* note = m_noteModel->getNote(indexInSrc);
+        if(note != Q_NULLPTR)
+            emit requestCreateUpdateNote(note);
+        m_isColorModified = false;
     }
 }
 
@@ -838,6 +865,11 @@ void Widget::newSlot()
 {
     //新建一个笔记本
     m_notebook =  new Edit_page(this);
+
+//    //clear text
+//    m_notebook->ui->textEdit->clear();
+//    //clear color
+//    m_notebook->ui->widget->setStyleSheet("background:rgb(0,0,0)");
     m_notebook->show();
     m_notebook->ui->textEdit->setFocus();
 
@@ -860,6 +892,7 @@ void Widget::newSlot()
     this->createNewNote();
     m_countLabel->setText(QObject::tr("%1 records in total").arg(m_proxyModel->rowCount()));
     connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));
+    connect(m_notebook,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
 }
 
 void Widget::onTrashButtonClicked()
@@ -907,9 +940,15 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
     m_notebook->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 
     m_notebook->show();
+    //读取item下标 index.row()
+    //for
+    //new note
+    //push back
+    //connect
     m_editors.push_back(m_notebook);
 
     connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));
+    connect(m_notebook,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
 }
 
 

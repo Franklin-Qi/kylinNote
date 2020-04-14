@@ -49,7 +49,8 @@ void DBManager::createTables()
                      "modification_date INTEGER NOT NULL DEFAULT (0),"
                      "deletion_date INTEGER NOT NULL DEFAULT (0),"
                      "content TEXT, "
-                     "full_title TEXT);";
+                     "full_title TEXT,"
+                     "note_color INTEGER DEFAULT (0));";
 
     query.exec(active);
     //CREATE UNIQUE INDEX 用于在表中创建唯一索引,这意味着两个行不能拥有相同的索引值
@@ -64,7 +65,8 @@ void DBManager::createTables()
                       "modification_date INTEGER NOT NULL DEFAULT (0),"
                       "deletion_date INTEGER NOT NULL DEFAULT (0),"
                       "content TEXT,"
-                      "full_title TEXT)";
+                      "full_title TEXT,"
+                      "note_color INTEGER DEFAULT (0));";
     query.exec(deleted);
 }
 
@@ -121,12 +123,15 @@ NoteData* DBManager::getNote(QString id)
         QDateTime dateTimeModification = QDateTime::fromMSecsSinceEpoch(epochDateTimeModification);
         QString content = query.value(4).toString();
         QString fullTitle = query.value(5).toString();
+        int notecolor = query.value(6).toInt();
 
         note->setId(id);
         note->setCreationDateTime(dateTimeCreation);
         note->setLastModificationDateTime(dateTimeModification);
         note->setContent(content);
         note->setFullTitle(fullTitle);
+        note->setNoteColor(notecolor);
+
         return note;
     }
     return Q_NULLPTR;
@@ -177,12 +182,14 @@ QList<NoteData *> DBManager::getAllNotes()
             QDateTime dateTimeModification = QDateTime::fromMSecsSinceEpoch(epochDateTimeModification);
             QString content = query.value(4).toString();
             QString fullTitle = query.value(5).toString();
+            int notecolor = query.value(6).toInt();
 
             note->setId(id);
             note->setCreationDateTime(dateTimeCreation);
             note->setLastModificationDateTime(dateTimeModification);
             note->setContent(content);
             note->setFullTitle(fullTitle);
+            note->setNoteColor(notecolor);
 
             noteList.push_back(note);
         }
@@ -210,16 +217,19 @@ bool DBManager::addNote(NoteData* note)
                               .replace("'","''")
                               .replace(QChar('\x0'), emptyStr);
 
+    int notecolor = note->notecolor();
+
     qint64 epochTimeDateLastModified = note->lastModificationdateTime().isNull() ? epochTimeDateCreated
                                                                                  : note->lastModificationdateTime().toMSecsSinceEpoch();
 
     QString queryStr = QString("INSERT INTO active_notes "
-                               "(creation_date, modification_date, deletion_date, content, full_title) "
-                               "VALUES (%1, %2, -1, '%3', '%4');")
+                               "(creation_date, modification_date, deletion_date, content, full_title, note_color) "
+                               "VALUES (%1, %2, -1, '%3', '%4', '%5');")
                                .arg(epochTimeDateCreated)
                                .arg(epochTimeDateLastModified)
                                .arg(content)
-                               .arg(fullTitle);
+                               .arg(fullTitle)
+                               .arg(notecolor);
 
     query.exec(queryStr);
     //Returns the number of rows affected by the result's SQL statement
@@ -252,14 +262,17 @@ bool DBManager::removeNote(NoteData* note)
                               .replace("'","''")
                               .replace(QChar('\x0'), emptyStr);
 
+    int notecolor = note->notecolor();
+
     queryStr = QString("INSERT INTO deleted_notes "
-                       "VALUES (%1, %2, %3, %4, '%5', '%6');")
+                       "VALUES (%1, %2, %3, %4, '%5', '%6', '%7');")
                        .arg(id)
                        .arg(epochTimeDateCreated)
                        .arg(epochTimeDateModified)
                        .arg(epochTimeDateDeleted)
                        .arg(content)
-                       .arg(fullTitle);
+                       .arg(fullTitle)
+                       .arg(notecolor);
 
     query.exec(queryStr);
     bool addedToTrashDB = (query.numRowsAffected() == 1);
@@ -288,20 +301,25 @@ bool DBManager::updateNote(NoteData* note)
     QString emptyStr;
 
     int id = note->id();
+    int notecolor = note->notecolor();
+
     qint64 epochTimeDateModified = note->lastModificationdateTime().toMSecsSinceEpoch();
     QString content = note->content().replace(QChar('\x0'), emptyStr);
     QString fullTitle = note->fullTitle().replace(QChar('\x0'), emptyStr);
 
-    query.prepare(QStringLiteral("UPDATE active_notes SET modification_date = :date, content = :content, "
+    query.prepare(QStringLiteral("UPDATE active_notes SET note_color = :color, modification_date = :date, content = :content, "
                                  "full_title = :title WHERE id = :id"));
+    query.bindValue(QStringLiteral(":color"), notecolor);
     query.bindValue(QStringLiteral(":date"), epochTimeDateModified);
     query.bindValue(QStringLiteral(":content"), content);
     query.bindValue(QStringLiteral(":title"), fullTitle);
     query.bindValue(QStringLiteral(":id"), id);
 
+
     if (!query.exec()) {
         qWarning () << __func__ << ": " << query.lastError();
     }
+
     return (query.numRowsAffected() == 1);
 }
 
@@ -317,6 +335,7 @@ bool DBManager::migrateNote(NoteData* note)
     QString emptyStr;
 
     int id = note->id();
+    int notecolor = note->notecolor();
     qint64 epochTimeDateCreated = note->creationDateTime().toMSecsSinceEpoch();
     qint64 epochTimeDateModified = note->lastModificationdateTime().toMSecsSinceEpoch();
     QString content = note->content()
@@ -327,12 +346,13 @@ bool DBManager::migrateNote(NoteData* note)
                               .replace(QChar('\x0'), emptyStr);
 
     QString queryStr = QString("INSERT INTO active_notes "
-                               "VALUES (%1, %2, %3, -1, '%4', '%5');")
+                               "VALUES (%1, %2, %3, -1, '%4', '%5', '%6');")
                                .arg(id)
                                .arg(epochTimeDateCreated)
                                .arg(epochTimeDateModified)
                                .arg(content)
-                               .arg(fullTitle);
+                               .arg(fullTitle)
+                               .arg(notecolor);
 
     query.exec(queryStr);
     return (query.numRowsAffected() == 1);
@@ -349,6 +369,7 @@ bool DBManager::migrateTrash(NoteData* note)
     QString emptyStr;
 
     int id = note->id();
+    int notecolor = note->notecolor();
     qint64 epochTimeDateCreated = note->creationDateTime().toMSecsSinceEpoch();
     qint64 epochTimeDateModified = note->lastModificationdateTime().toMSecsSinceEpoch();
     qint64 epochTimeDateDeleted = note->deletionDateTime().toMSecsSinceEpoch();
@@ -360,13 +381,14 @@ bool DBManager::migrateTrash(NoteData* note)
                               .replace(QChar('\x0'), emptyStr);
 
     QString queryStr = QString("INSERT INTO deleted_notes "
-                               "VALUES (%1, %2, %3, %4, '%5', '%6');")
+                               "VALUES (%1, %2, %3, %4, '%5', '%6', '%7');")
                                .arg(id)
                                .arg(epochTimeDateCreated)
                                .arg(epochTimeDateModified)
                                .arg(epochTimeDateDeleted)
                                .arg(content)
-                               .arg(fullTitle);
+                               .arg(fullTitle)
+                               .arg(notecolor);
 
     query.exec(queryStr);
     return (query.numRowsAffected() == 1);

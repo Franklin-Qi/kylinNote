@@ -30,6 +30,16 @@ void NoteData::setFullTitle(const QString &fullTitle)
     m_fullTitle = fullTitle;
 }
 
+int NoteData::notecolor() const
+{
+    return m_notecolor;
+}
+
+void NoteData::setNoteColor(const int &notecolor)
+{
+    m_notecolor = notecolor;
+}
+
 QDateTime NoteData::lastModificationdateTime() const
 {
     return m_lastModificationDateTime;
@@ -101,12 +111,14 @@ void NoteData::setCreationDateTime(const QDateTime&creationDateTime)
 }
 
 QDataStream &operator<<(QDataStream &stream, const NoteData* noteData) {
-    return stream << noteData->id() << noteData->fullTitle() << noteData->creationDateTime() << noteData->lastModificationdateTime() << noteData->content();
+    return stream << noteData->id() << noteData->fullTitle() << noteData->creationDateTime() \
+                  << noteData->lastModificationdateTime() << noteData->content() << noteData->notecolor();
 }
 
 QDataStream &operator>>(QDataStream &stream, NoteData* &noteData){
     noteData = new NoteData();
     int id;
+    int notecolor;
     QString fullTitle;
     QDateTime lastModificationDateTime;
     QDateTime creationDateTime;
@@ -117,6 +129,7 @@ QDataStream &operator>>(QDataStream &stream, NoteData* &noteData){
     noteData->setLastModificationDateTime(lastModificationDateTime);
     noteData->setCreationDateTime(creationDateTime);
     noteData->setContent(content);
+    noteData->setNoteColor(notecolor);
     return stream;
 }
 

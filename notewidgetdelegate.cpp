@@ -23,6 +23,7 @@ NoteWidgetDelegate::NoteWidgetDelegate(QObject *parent)
       m_applicationInactiveColor(207, 207, 207),            //应用程序可见，但未选择显示在前面时背景色
       m_separatorColor(221, 221, 221),
       m_defaultColor(0, 0, 0),
+      m_noteColor(0, 0, 0),                             //便签头颜色
       m_rowHeight(82),                                      //item宽度
       m_maxFrame(200),
       m_rowRightOffset(0),
@@ -89,30 +90,24 @@ void NoteWidgetDelegate::setAnimationDuration(const int duration)
 
 void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     QStyleOptionViewItem opt = option;
     opt.rect.setWidth(option.rect.width() - m_rowRightOffset);      //678
 
-    int currentFrame = m_timeLine->currentFrame();
-    //qDebug() << "currentFrame" << currentFrame;  //0
-    double rate = (currentFrame/(m_maxFrame * 1.0));
-    //qDebug() << "rate" << rate;  //0
-    double height = m_rowHeight * rate;  //0
-    //qDebug() << "height" << height;
-    //qDebug() << m_state;
+    int currentFrame = m_timeLine->currentFrame();                  //0
+    double rate = (currentFrame/(m_maxFrame * 1.0));                //0
+    double height = m_rowHeight * rate;                             //0
+
     //默认Normal
     switch(m_state){
     case Insert:
     case Remove:
     case MoveOut:
         if(index == m_animatedIndex){
-            //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
             opt.rect.setHeight(int(height));
             opt.backgroundBrush.setColor(m_notActiveColor);
         }
         break;
     case MoveIn:
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         if(index == m_animatedIndex){
             opt.rect.setY(int(height));
         }
@@ -120,25 +115,25 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     case Normal:
         break;
     }
-
-    //第一层
+    //绘制第一层便签头背景
+    int m_noteColor{index.data(NoteModel::NoteColor).toInt()};
     painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter->setBrush(QBrush(QColor(0, 170, 255)));   //0, 170, 255
+    painter->setBrush(QBrush(intToQcolor(m_noteColor)));
     painter->setPen(Qt::transparent);
     opt.rect.setWidth(678);
-    opt.rect.setHeight(opt.rect.height() - 10);
+    opt.rect.setHeight(opt.rect.height() - 5);
     {
         QPainterPath painterPath;
         painterPath.addRoundedRect(opt.rect, 7, 7);
         painter->drawPath(painterPath);
     }
 
-    //第二层
+    //绘制第二层底色背景
     painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter->setBrush(QBrush(QColor(43, 49, 56)));  //43, 49, 56
+    painter->setBrush(QBrush(QColor(43, 49, 56)));
     painter->setPen(Qt::transparent);
 
-    opt.rect.setWidth(678);//5
+    opt.rect.setWidth(678);
     opt.rect.setHeight(opt.rect.height() - 0);
     opt.rect.setLeft(opt.rect.left() + 5);
     {
@@ -154,22 +149,16 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 
 QSize NoteWidgetDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QSize result = QStyledItemDelegate::sizeHint(option, index);
-    //qDebug() << "159" << result;  //QSize(0, 23)
+    QSize result = QStyledItemDelegate::sizeHint(option, index);        //QSize(0, 23)
     if(index == m_animatedIndex){
-        //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-        //qDebug() << index;
         if(m_state == MoveIn){
             result.setHeight(m_rowHeight);
-            //qDebug() << m_rowHeight;
         }else{
             double rate = m_timeLine->currentFrame()/(m_maxFrame * 1.0);
             double height = m_rowHeight * rate;
-            //qDebug() << height;
             result.setHeight(int(height));
         }
     }else{
-        //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         result.setHeight(m_rowHeight);
     }
 
@@ -214,7 +203,7 @@ void NoteWidgetDelegate::paintBackground2(QPainter *painter, const QStyleOptionV
             QPainterPath painterPath;
             painterPath.addRoundedRect(opt.rect, 0, 0);
             painter->drawPath(painterPath);
-            //painter->fillRect(option.rect, QBrush(m_defaultColor));//
+            //painter->fillRect(option.rect, QBrush(m_defaultColor));
         }
     }
     //鼠标悬停时颜色
@@ -231,44 +220,10 @@ void NoteWidgetDelegate::paintBackground2(QPainter *painter, const QStyleOptionV
     //当前item未选中 未悬停时颜色
     }else if((index.row() !=  m_currentSelectedIndex.row() - 1)
              && (index.row() !=  m_hoveredIndex.row() - 1)){
-        //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
         painter->fillRect(option.rect, QBrush(m_defaultColor));//黑色
     }
 
-}
-
-void NoteWidgetDelegate::paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    //qDebug() << "m_isActive" << m_isActive;  //fulse
-    //option.state 此变量保存绘制控件时使用的样式标志 默认值是QStyle：：State_None
-    if((option.state & QStyle::State_Selected) == QStyle::State_Selected){
-        //应用程序是可见的，并被选择在前面。
-        if(qApp->applicationState() == Qt::ApplicationActive){      //返回应用程序的当前状态。
-            if(m_isActive){//用指定的画笔填充给定的矩形。
-                qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-                painter->fillRect(option.rect, QBrush(m_ActiveColor));//浅蓝
-            }else{
-                qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-                painter->fillRect(option.rect, QBrush(m_notActiveColor));//深蓝
-            }
-        //应用程序可见，但未选择显示在前面
-        }else if(qApp->applicationState() == Qt::ApplicationInactive){
-            qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-            painter->fillRect(option.rect, QBrush(m_applicationInactiveColor));//灰色
-        }
-    //鼠标悬停时颜色
-    //用于指示小部件是否在鼠标下。
-    }else if((option.state & QStyle::State_MouseOver) == QStyle::State_MouseOver){
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-        painter->fillRect(option.rect, QBrush(m_hoverColor));//灰色
-    //当前item未选中 未悬停时颜色
-    }else if((index.row() !=  m_currentSelectedIndex.row() - 1)
-             && (index.row() !=  m_hoveredIndex.row() - 1)){
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-        painter->fillRect(option.rect, QBrush(m_defaultColor));//黑色
-        //paintSeparator(painter, option, index);  //绘制分割线
-    }
 }
 
 void NoteWidgetDelegate::paintLabels(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -278,6 +233,7 @@ void NoteWidgetDelegate::paintLabels(QPainter* painter, const QStyleOptionViewIt
     const int spaceY = 5;       // 标题和日期之间的空格
 
     QString title{index.data(NoteModel::NoteFullTitle).toString()};
+
     QFont titleFont = (option.state & QStyle::State_Selected) == QStyle::State_Selected ? m_titleSelectedFont : m_titleFont;
     QFontMetrics fmTitle(titleFont);
     QRect fmRectTitle = fmTitle.boundingRect(title);
@@ -341,6 +297,7 @@ void NoteWidgetDelegate::paintLabels(QPainter* painter, const QStyleOptionViewIt
 
     // 绘图标题和日期
     title = fmTitle.elidedText(title, Qt::ElideRight, int(titleRectWidth));
+
     drawStr(titleRectPosX, titleRectPosY, titleRectWidth, titleRectHeight, m_titleColor, titleFont, title);
     drawStr(dateRectPosX, dateRectPosY, dateRectWidth, dateRectHeight, m_dateColor, m_dateFont, date);
 }
@@ -400,4 +357,18 @@ void NoteWidgetDelegate::setHoveredIndex(const QModelIndex &hoveredIndex)
 void NoteWidgetDelegate::setCurrentSelectedIndex(const QModelIndex &currentSelectedIndex)
 {
     m_currentSelectedIndex = currentSelectedIndex;
+}
+
+int NoteWidgetDelegate::qcolorToInt(const QColor &color) const
+{
+    //将Color 从QColor 转换成 int
+    return (int)(((unsigned int)color.blue()<< 16) | (unsigned short)(((unsigned short)color.green()<< 8) | color.red()));
+}
+
+QColor NoteWidgetDelegate::intToQcolor(int &intColor) const
+{
+    int red = intColor & 255;
+    int green = intColor >> 8 & 255;
+    int blue = intColor >> 16 & 255;
+    return QColor(red, green, blue);
 }

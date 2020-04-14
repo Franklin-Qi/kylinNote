@@ -18,7 +18,10 @@ class Edit_page : public QWidget
 public:
     Edit_page(Widget* p , QWidget *parent = nullptr);
     ~Edit_page();
+
+    Ui::Edit_page *ui;
     Widget* pNotebook;
+    QColor m_editColor;
     void paintEvent(QPaintEvent *event)
     {
         QPainter painter(this);
@@ -37,7 +40,7 @@ public:
         }
         QWidget::paintEvent(event);
     }
-    Ui::Edit_page *ui;
+
     void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
@@ -78,6 +81,7 @@ private:
 
 signals:
     void texthasChanged();
+    void colorhasChanged(const QColor &color);
 };
 
 #endif // EDIT_PAGE_H

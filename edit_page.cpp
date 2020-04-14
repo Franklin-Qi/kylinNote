@@ -12,16 +12,17 @@ static int count =0;
 Edit_page::Edit_page(Widget* page, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Edit_page)
+  , m_editColor(0,0,0)
 {
     ui->setupUi(this);
-        QBitmap bmp(this->size());
-        bmp.fill();
-        QPainter p(&bmp);
-        p.setPen(Qt::NoPen);
-        p.setBrush(Qt::black);
-        p.setRenderHint(QPainter::Antialiasing);
-        p.drawRoundedRect(bmp.rect(),6,6);
-        setMask(bmp);
+    QBitmap bmp(this->size());
+    bmp.fill();
+    QPainter p(&bmp);
+    p.setPen(Qt::NoPen);
+    p.setBrush(Qt::black);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.drawRoundedRect(bmp.rect(),6,6);
+    setMask(bmp);
     pNotebook = page;
     setWindowOpacity(0.9);
     setWindowFlags(Qt::FramelessWindowHint);
@@ -61,68 +62,91 @@ void Edit_page::set_text_editing_page()
 
 void Edit_page::textChangedSlot()
 {
-    qDebug() << "emit textchange";
     emit texthasChanged();
+    qDebug() << "emit textchange";
 }
-//QColor(76,119,231));
+
 void Edit_page::blue_btn_change()
 {
+
     ui->widget->setStyleSheet("background:rgba(76,119,231,1);\
                         border-radius:4px;");
+    m_editColor = QColor(76,119,231);
+    emit colorhasChanged(m_editColor);
+    qDebug() << "emit colorhasChanged";
 }
 
 void Edit_page::pink_btn_change()
 {
     ui->widget->setStyleSheet("background:rgba(250,108,99,1);\
                         border-radius:4px;");
+    m_editColor = QColor(250,108,99);
+    emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::dark_green_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(15,161,90,1);\
                          border-radius:4px;");
+     m_editColor = QColor(15,161,90);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::orang_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(255,151,47,1);\
                          border-radius:4px;");
+
+     m_editColor = QColor(255,151,47);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::Violet_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(186,123,216,1);\
                          border-radius:4px;");
+     m_editColor = QColor(186,123,216);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::Golden_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(248,209,93,1);\
                          border-radius:4px;");
+     m_editColor = QColor(248,209,93);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::light_blue_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(42,162,217,1);\
                          border-radius:4px;");
+     m_editColor = QColor(42,162,217);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::light_green_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(110,207,67,1);\
                          border-radius:4px;");
+     m_editColor = QColor(110,207,67);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::yellow_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(250,243,175,1);\
                          border-radius:4px;");
+     m_editColor = QColor(250,243,175);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::wight_btn_change()
 {
      ui->widget->setStyleSheet("background:rgba(236,238,242,1);\
                          border-radius:4px;");
+     m_editColor = QColor(236,238,242);
+     emit colorhasChanged(m_editColor);
 }
 
 void Edit_page::set_all_btn_attribute()
@@ -133,9 +157,6 @@ void Edit_page::set_all_btn_attribute()
     ui->chang_btn->setIcon(pixmap2);
     ui->color_btn->setIcon(pixmap3);
 }
-
-
-
 
 void Edit_page::on_color_btn_clicked()
 {
@@ -153,11 +174,10 @@ void Edit_page::on_chang_btn_clicked()
     text_edit_page->show();
 }
 
-
 void Edit_page::contextMenuEvent(QContextMenuEvent *event)
 {
+   Q_UNUSED(event);
    QMenu * menu = new QMenu(this);
-
 
    QAction * delete_the_widget = new QAction(tr("关闭"));
    QAction * t1 = new QAction(tr("新建"));

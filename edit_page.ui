@@ -29,7 +29,7 @@ background:rgb(19,20,20);
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(170, 255, 255);</string>
+    <string notr="true"/>
    </property>
    <widget class="QWidget" name="widget_2" native="true">
     <property name="geometry">

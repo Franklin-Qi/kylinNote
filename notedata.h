@@ -16,6 +16,9 @@ public:
     int id() const;
     void setId(const int& id);
 
+    int notecolor() const;
+    void setNoteColor(const int &notecolor);
+
     QString fullTitle() const;
     void setFullTitle(const QString &fullTitle);
 
@@ -43,6 +46,7 @@ public:
 
 private:
     int m_id;
+    int m_notecolor;
     QString m_fullTitle;
     QDateTime m_lastModificationDateTime;
     QDateTime m_creationDateTime;

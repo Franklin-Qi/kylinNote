@@ -41,7 +41,6 @@ SOURCES += \
     tanchuang.cpp \
     text_editing.cpp \
     tui_chu_biab_qian_dialog.cpp \
-    ukui_notebook.cpp \
     widget.cpp
 
 HEADERS += \
@@ -57,7 +56,6 @@ HEADERS += \
     tanchuang.h \
     text_editing.h \
     tui_chu_biab_qian_dialog.h \
-    ukui_notebook.h \
     widget.h
 
 FORMS += \
@@ -68,7 +66,6 @@ FORMS += \
     tanchuang.ui \
     text_editing.ui \
     tui_chu_biab_qian_dialog.ui \
-    ukui_notebook.ui \
     widget.ui
 
 # Default rules for deployment.
