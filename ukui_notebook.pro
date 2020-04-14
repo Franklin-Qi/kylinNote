@@ -28,8 +28,11 @@ TRANSLATIONS += \
         ukui_notebook_zh_CN.ts
 
 SOURCES += \
+    cai_tou.cpp \
+    color_mini.cpp \
     dbmanager.cpp \
     edit_page.cpp \
+    form.cpp \
         main.cpp \
     mythrow.cpp \
     notedata.cpp \
@@ -37,6 +40,8 @@ SOURCES += \
     noteview.cpp \
     notewidgetdelegate.cpp \
     select_color_page.cpp \
+    set_font_color_page.cpp \
+    set_font_size_page.cpp \
     singleitemButton.cpp \
     tanchuang.cpp \
     text_editing.cpp \
@@ -44,14 +49,19 @@ SOURCES += \
     widget.cpp
 
 HEADERS += \
+    cai_tou.h \
+    color_mini.h \
     dbmanager.h \
     edit_page.h \
+    form.h \
     mythrow.h \
     notedata.h \
     notemodel.h \
     noteview.h \
     notewidgetdelegate.h \
     select_color_page.h \
+    set_font_color_page.h \
+    set_font_size_page.h \
     singleitemButton.h \
     tanchuang.h \
     text_editing.h \
@@ -59,10 +69,13 @@ HEADERS += \
     widget.h
 
 FORMS += \
+    cai_tou.ui \
+    color_mini.ui \
     edit_page.ui \
-    listModel.ui \
+    form.ui \
     select_color_page.ui \
-    tableModel.ui \
+    set_font_color_page.ui \
+    set_font_size_page.ui \
     tanchuang.ui \
     text_editing.ui \
     tui_chu_biab_qian_dialog.ui \

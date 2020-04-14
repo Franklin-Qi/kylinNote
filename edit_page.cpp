@@ -6,6 +6,14 @@
 #include <QDebug>
 #include "widget.h"
 #include <QPainter>
+#include "ui_text_editing.h"
+#include <QTextList>
+#include "set_font_size_page.h"
+#include "ui_set_font_size_page.h"
+#include "set_font_color_page.h"
+#include "ui_set_font_color_page.h"
+#include "cai_tou.h"
+
 
 static int count =0;
 
@@ -30,6 +38,16 @@ Edit_page::Edit_page(Widget* page, QWidget *parent) :
     set_select_color_page();
     set_text_editing_page();
     connect(ui->textEdit,&QTextEdit::textChanged,this,&Edit_page::textChangedSlot);
+    timer = new QTimer();
+    connect(timer, SIGNAL(timeout()), this, SLOT(color_clicked()));
+    timer->setInterval(100);
+    timer->start();
+    set_color();
+
+    caitou = new  cai_tou(this);
+    caitou->move(0,0);
+    ui->widget->hide();
+    ui->textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 Edit_page::~Edit_page()
@@ -55,7 +73,20 @@ void Edit_page::set_select_color_page()
 
 void Edit_page::set_text_editing_page()
 {
-    text_edit_page = new Text_editing();
+    text_edit_page = new Text_editing(pNotebook);
+
+    connect(text_edit_page->set_size_page->ui->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showSizeSpinBix()));
+    connect(text_edit_page->set_color_fort_page->ui->listWidget,SIGNAL(itemClicked(QListWidgetItem*)),this,SLOT(showfortcolor()));
+
+    connect(text_edit_page->ui->BoldBtn,SIGNAL(clicked()),this,SLOT(showBoldBtn()));
+    connect(text_edit_page->ui->ItalicBtn,SIGNAL(clicked(bool)),this,SLOT(showItalicBtn()));
+    connect(text_edit_page->ui->underlineBtn,SIGNAL(clicked(bool)),this,SLOT(showUnderlineBtn()));
+    connect(text_edit_page->ui->StrikeOutResolvedBtn,SIGNAL(clicked(bool)),this,SLOT(showStrikeOutResolved()));
+    connect(text_edit_page->ui->showListBtn,SIGNAL(clicked(bool)),this,SLOT(showList(bool)));
+    connect(text_edit_page->ui->showNUMList,SIGNAL(clicked(bool)),this,SLOT(showNUMList(bool)));
+   // connect(text_edit_page->ui->light_blue_btn,SIGNAL(activated(int)),this,SLOT(showSizeSpinBix(int)));
+
+    //    connect(colorBtn,SIGNAL(clicked(bool)),this,SLOT(showColorBtn()));
 }
 
 
@@ -66,87 +97,247 @@ void Edit_page::textChangedSlot()
     qDebug() << "emit textchange";
 }
 
-void Edit_page::blue_btn_change()
+//chu ti
+void Edit_page::showBoldBtn()
+{
+    qDebug()<<"-------showBoldBtn------------";
+    QTextCharFormat fmt;
+    fmt.setFontWeight(text_edit_page->ui->BoldBtn->isCheckable() ? QFont::Bold : QFont::Normal);
+
+    QTextCursor cursor = ui->textEdit->textCursor();
+    if (!cursor.hasSelection()){
+        cursor.select(QTextCursor::WordUnderCursor);
+    }else{
+        cursor.mergeCharFormat(fmt);
+    }
+
+    ui->textEdit->mergeCurrentCharFormat(fmt);
+}
+//xie ti
+void Edit_page::showItalicBtn()
+{
+     qDebug()<<"-------showItalicBtn------------";
+    QTextCharFormat fmt;
+    fmt.setFontItalic(text_edit_page->ui->ItalicBtn->isCheckable() );// ? QFont::StyleItalic : QFont::Normal);
+    ui->textEdit->mergeCurrentCharFormat(fmt);
+}
+
+//xia hua xian
+void Edit_page::showUnderlineBtn()
+{
+    qDebug()<<"-------showUnderlineBtn------------";
+    QTextCharFormat fmt;
+    fmt.setFontUnderline(text_edit_page->ui->underlineBtn->isCheckable());// ? QFont::UnderlineResolved : QFont::Normal );
+    ui->textEdit->mergeCurrentCharFormat(fmt);
+}
+//sha chu xian
+void Edit_page::showStrikeOutResolved()
+{
+     qDebug()<<"-------showStrikeOutResolved------------";
+    QTextCharFormat fmt;
+    fmt.setFontStrikeOut(text_edit_page->ui->StrikeOutResolvedBtn->isCheckable());// ? QFont::StrikeOutResolved : QFont::Normal );
+    ui->textEdit->mergeCurrentCharFormat(fmt);
+}
+
+
+
+//fu hao  suo jin
+void Edit_page::showList(bool index)
 {
 
-    ui->widget->setStyleSheet("background:rgba(76,119,231,1);\
-                        border-radius:4px;");
+    qDebug()<<"--------showList-----------";
+    QTextCursor cursor = ui->textEdit->textCursor();
+
+    QTextListFormat::Style style = QTextListFormat::ListDisc;
+
+        style = QTextListFormat::ListDisc;
+
+    cursor.beginEditBlock();    //设置缩进值
+
+    QTextBlockFormat blockFmt = cursor.blockFormat();
+    QTextListFormat listFmt;
+    if(cursor.currentList())
+    {
+        listFmt = cursor.currentList()->format();
+    }
+    else
+    {
+        listFmt.setIndent(blockFmt.indent() + 1);
+        blockFmt.setIndent(0);
+        cursor.setBlockFormat(blockFmt);
+    }
+    listFmt.setStyle(style);
+    cursor.createList(listFmt);
+
+    cursor.endEditBlock();
+}
+
+
+//shu zhi  suo jin
+void Edit_page::showNUMList(bool index)
+{
+
+    qDebug()<<"--------showList-----------";
+    QTextCursor cursor = ui->textEdit->textCursor();
+
+    QTextListFormat::Style style = QTextListFormat::ListDisc;
+
+        style = QTextListFormat::ListDecimal;
+
+    cursor.beginEditBlock();    //设置缩进值
+
+    QTextBlockFormat blockFmt = cursor.blockFormat();
+    QTextListFormat listFmt;
+    if(cursor.currentList())
+    {
+        listFmt = cursor.currentList()->format();
+    }
+    else
+    {
+        listFmt.setIndent(blockFmt.indent() + 1);
+        blockFmt.setIndent(0);
+        cursor.setBlockFormat(blockFmt);
+    }
+    listFmt.setStyle(style);
+    cursor.createList(listFmt);
+
+    cursor.endEditBlock();
+}
+
+// zhi ti dax iao
+void Edit_page::showSizeSpinBix()
+{
+    qDebug()<<"--------------";
+    int num = text_edit_page->set_size_page->ui->listWidget->currentRow();
+    text_edit_page->ui->light_blue_btn->setText(QString::number(num+22));
+    text_edit_page->set_size_page->close();
+
+    QTextCharFormat fmt;
+    fmt.setFontPointSize(num+10);
+    ui->textEdit->mergeCurrentCharFormat(fmt);
+}
+
+void Edit_page::set_color()
+{
+
+    color[0]="background:rgba(76,119,231,1);";
+    color[1]="background:rgba(250,108,99,1);";
+    color[2]="background:rgba(15,161,90,1);";
+    color[3]="background:rgba(255,151,47,1);";
+    color[4]="background:rgba(186,123,216,1);";
+    color[5]="background:rgba(248,209,93,1);";
+    color[6]="background:rgba(42,162,217,1);";
+    color[7]="background:rgba(110,207,67,1);";
+    color[8]="background:rgba(250,243,175,1);";
+    color[9]="background:rgba(236,238,242,1);";
+    color[10]="background:rgba(0,0,0,1);";
+
+    color_num[0]=QColor(76,119,231);
+    color_num[1]=QColor(250,108,99);
+    color_num[2]=QColor(15,161,90);
+    color_num[3]=QColor(255,151,47);
+    color_num[4]=QColor(186,123,216);
+    color_num[5]=QColor(248,209,93);
+    color_num[6]=QColor(42,162,217);
+    color_num[7]=QColor(110,207,67);
+    color_num[8]=QColor(250,243,175);
+    color_num[9]=QColor(236,238,242);
+    color_num[10]=QColor(0,0,0);
+}
+
+void Edit_page::showfortcolor()
+{
+    qDebug()<<"--------------";
+    int num = text_edit_page->set_color_fort_page->ui->listWidget->currentRow();
+    text_edit_page->ui->blue_btn_2->setStyleSheet(color[num]+"border-radius:3px;");
+
+    QTextCharFormat fmt;
+    fmt.setForeground(color_num[num]);
+    ui->textEdit->mergeCurrentCharFormat(fmt);
+
+    text_edit_page->set_color_fort_page->close();
+}
+
+void Edit_page::blue_btn_change()
+{
     m_editColor = QColor(76,119,231);
     emit colorhasChanged(m_editColor);
     qDebug() << "emit colorhasChanged";
+    caitou->color_widget = QColor(76,119,231);
+    update();
 }
 
 void Edit_page::pink_btn_change()
 {
-    ui->widget->setStyleSheet("background:rgba(250,108,99,1);\
-                        border-radius:4px;");
     m_editColor = QColor(250,108,99);
     emit colorhasChanged(m_editColor);
+    caitou->color_widget = QColor(250,108,99);
+    update();
 }
 
 void Edit_page::dark_green_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(15,161,90,1);\
-                         border-radius:4px;");
+
      m_editColor = QColor(15,161,90);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget =QColor(15,161,90); ;
+     update();
 }
 
 void Edit_page::orang_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(255,151,47,1);\
-                         border-radius:4px;");
-
      m_editColor = QColor(255,151,47);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget =QColor(255,151,47) ;
+     update();
 }
 
 void Edit_page::Violet_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(186,123,216,1);\
-                         border-radius:4px;");
      m_editColor = QColor(186,123,216);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget = QColor(186,123,216);
+     update();
 }
 
 void Edit_page::Golden_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(248,209,93,1);\
-                         border-radius:4px;");
      m_editColor = QColor(248,209,93);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget = QColor(248,209,93);
+     update();
 }
 
 void Edit_page::light_blue_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(42,162,217,1);\
-                         border-radius:4px;");
      m_editColor = QColor(42,162,217);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget = QColor(42,162,217);
+     update();
 }
 
 void Edit_page::light_green_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(110,207,67,1);\
-                         border-radius:4px;");
      m_editColor = QColor(110,207,67);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget = QColor(110,207,67);
+     update();
 }
 
 void Edit_page::yellow_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(250,243,175,1);\
-                         border-radius:4px;");
      m_editColor = QColor(250,243,175);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget = QColor(250,243,175);
+     update();
 }
 
 void Edit_page::wight_btn_change()
 {
-     ui->widget->setStyleSheet("background:rgba(236,238,242,1);\
-                         border-radius:4px;");
      m_editColor = QColor(236,238,242);
      emit colorhasChanged(m_editColor);
+     caitou->color_widget = QColor(236,238,242);
+     update();
 }
 
 void Edit_page::set_all_btn_attribute()
@@ -212,3 +403,45 @@ void Edit_page::show_note_page()
     pNotebook->show();
 }
 
+void Edit_page::color_clicked()
+{
+    if(!pNotebook->dack_wight_flag == -1){
+        return;
+    }
+        if(!pNotebook->dack_wight_flag)
+        {
+            light_show();
+        }else{
+
+            black_show();
+        }
+
+}
+
+void Edit_page::light_show()
+{
+    this->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
+                                          "background:rgb(240, 240, 240);\n"
+                                          ""));
+    ui->widget_2->setStyleSheet(QString::fromUtf8("\n"
+                                                  "background:rgb(240, 240, 240);\n"
+                                                  ""));
+    ui->color_btn->setStyleSheet(QString::fromUtf8("image: url(:/image/1x/color.png);\n"
+                                                   "background:rgba(240, 240, 240,0.9);\n"
+                                                   ""));
+    ui->chang_btn->setStyleSheet(QString::fromUtf8(""));
+    ui->textEdit->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 0);"));
+}
+
+void Edit_page::black_show()
+{
+    this->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);\n"
+                                          "background:rgb(19,20,20);\n"
+                                          ""));
+    ui->widget_2->setStyleSheet(QString::fromUtf8("background:rgb(19,20,20);\n"));
+    ui->color_btn->setStyleSheet(QString::fromUtf8("image: url(:/image/1x/color.png);\n"
+                                                   "background:rgba(19,20,20,0.9);\n"
+                                                   ""));
+    ui->chang_btn->setStyleSheet(QString::fromUtf8(""));
+    ui->textEdit->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255);"));
+}

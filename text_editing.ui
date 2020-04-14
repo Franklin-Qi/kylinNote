@@ -26,42 +26,6 @@
     <string notr="true">background:rgb(19,20,20);
 border-radius:4px;</string>
    </property>
-   <widget class="QPushButton" name="light_blue_btn">
-    <property name="geometry">
-     <rect>
-      <x>183</x>
-      <y>7</y>
-      <width>30</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>30</width>
-      <height>25</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>30</width>
-      <height>25</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">
-background-color: rgb(67, 67, 67);
-
-color: rgba(145, 145, 145, 1);
-border-top-left-radius:4px;
-border-top-right-radius:0px;
-border-bottom-left-radius:4px;
-border-bottom-right-radius:0px;
-</string>
-    </property>
-    <property name="text">
-     <string>14</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="blue_btn">
     <property name="geometry">
      <rect>
@@ -94,7 +58,7 @@ border-bottom-left-radius:0px;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="orang_btn">
+   <widget class="QPushButton" name="BoldBtn">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -116,7 +80,7 @@ border-bottom-left-radius:0px;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="dark_green_btn">
+   <widget class="QPushButton" name="ItalicBtn">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -144,7 +108,7 @@ border-bottom-left-radius:0px;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pink_btn">
+   <widget class="QPushButton" name="underlineBtn">
     <property name="geometry">
      <rect>
       <x>55</x>
@@ -172,7 +136,7 @@ border-bottom-left-radius:0px;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="Violet_btn">
+   <widget class="QPushButton" name="StrikeOutResolvedBtn">
     <property name="geometry">
      <rect>
       <x>80</x>
@@ -231,7 +195,7 @@ border-bottom-left-radius:0px;</string>
      <enum>QFrame::Raised</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="Golden_btn">
+   <widget class="QPushButton" name="showListBtn">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -253,7 +217,7 @@ border-bottom-left-radius:0px;</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="light_green_btn">
+   <widget class="QPushButton" name="showNUMList">
     <property name="geometry">
      <rect>
       <x>145</x>
@@ -302,6 +266,29 @@ border-bottom-left-radius:0px;</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="light_blue_btn">
+    <property name="geometry">
+     <rect>
+      <x>183</x>
+      <y>7</y>
+      <width>30</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(67, 67, 67);
+
+color: rgba(145, 145, 145, 1);
+border-top-left-radius:4px;
+border-top-right-radius:0px;
+border-bottom-left-radius:4px;
+border-bottom-right-radius:0px;
+</string>
+    </property>
+    <property name="text">
+     <string>22</string>
     </property>
    </widget>
   </widget>

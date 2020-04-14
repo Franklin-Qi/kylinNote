@@ -6,6 +6,9 @@
 #include <QMenu>
 #include "select_color_page.h"
 #include "text_editing.h"
+#include <QPainter>
+#include <QColor>
+#include "cai_tou.h"
 
 namespace Ui {
 class Edit_page;
@@ -22,24 +25,7 @@ public:
     Ui::Edit_page *ui;
     Widget* pNotebook;
     QColor m_editColor;
-    void paintEvent(QPaintEvent *event)
-    {
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-       // painter.setBrush(QBrush(QColor(14, 19, 22)));
-        painter.setPen(Qt::transparent);
-        QRect rect = this->rect();
-        rect.setWidth(rect.width() - 0);
-        rect.setHeight(rect.height() - 0);
-        painter.drawRoundedRect(rect, 7, 7);
-        //也可用QPainterPath 绘制代替 painter.drawRoundedRect(rect, 15, 15);
-        {
-            QPainterPath painterPath;
-            painterPath.addRoundedRect(rect, 7, 7);
-            painter.drawPath(painterPath);
-        }
-        QWidget::paintEvent(event);
-    }
+
 
     void contextMenuEvent(QContextMenuEvent *event);
 
@@ -60,24 +46,36 @@ private slots:
     void clear_the_page();
     void add_new_page();
     void show_note_page();
-
-
+    void color_clicked();
     void on_chang_btn_clicked();
+    void showBoldBtn();
+    void showItalicBtn();
+    void showUnderlineBtn();
+    void showStrikeOutResolved();
+    //void showCurrentFormatChanged(const QTextCharFormat &);
+    void showList(bool );
+    void showNUMList(bool);
+    void showSizeSpinBix();
+    void showfortcolor();
 
 private:
     void set_all_btn_attribute();
     void palette_ui();
     void set_select_color_page();
     void set_text_editing_page();
-
-
-
+    void light_show();
+    void black_show();
+    void set_color();
 
     QPixmap pixmap1;
     QPixmap pixmap2;
     QPixmap pixmap3;
     select_color_page *color_page ;
     Text_editing *text_edit_page;
+    QTimer *timer;
+    QString color[11];
+    QColor color_num[11];
+    cai_tou *caitou;
 
 signals:
     void texthasChanged();

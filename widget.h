@@ -166,9 +166,8 @@ private slots:
     void listClickSlot();                           //item点击事件槽函数
     void listDoubleClickSlot(const QModelIndex &);  //item双击事件槽函数
     void lineeditChangedSlot(const QString &text);  //搜索栏清空按钮显示
-    void sortSlot();      //升/降序槽函数
-
-    //void loadNotes(QList<NoteData *> noteList, int noteCounter);
+    void sortSlot();                                //升/降序槽函数
+    void on_sort_btn_clicked();                     //主题切换
 
 protected:
     void paintEvent(QPaintEvent *event);

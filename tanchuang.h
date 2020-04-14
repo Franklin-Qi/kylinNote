@@ -8,7 +8,7 @@ class Widget;
 namespace Ui {
 class tanchuang;
 }
-///class Widget;
+///class Notebook;
 class tanchuang : public QDialog
 {
     Q_OBJECT
@@ -18,7 +18,7 @@ public:
     ~tanchuang();
 
     int close_flage;
-    Widget * p;
+
 
 
 private slots:
@@ -26,8 +26,15 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void color_clicked();
+
 private:
     Ui::tanchuang *ui;
+
+    void light_show();
+    void black_show();
+
+    Widget* pNotebook;
 
 
 };

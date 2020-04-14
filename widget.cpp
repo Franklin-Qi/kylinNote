@@ -1036,3 +1036,71 @@ void Widget::sortSlot()
     }
 }
 
+void Widget::on_sort_btn_clicked()
+{
+    if(dack_wight_flag)
+    {
+
+        //light_show();
+        dack_wight_flag = 0;
+    }else{
+
+
+        //black_show();
+        dack_wight_flag = 1;
+    }
+
+}
+
+void Widget::black_show()
+{
+    this->setObjectName(QString::fromUtf8("便签本"));
+
+    ui->widget->setStyleSheet("QWidget{background-color: rgba(19,20,20, 0.7);}");
+    ui->frameRight->setStyleSheet(QString::fromUtf8("background:rgba(19,20,20,0);"));
+    ui->verticalLayout_textEdit->setObjectName(QString::fromUtf8("verticalLayout_textEdit"));
+    ui->newKynote->setStyleSheet(QString::fromUtf8("background:rgba(61,107,229,1);\n"
+                                                 "color: rgb(255, 255, 255);"));
+    ui->SearchLine->setStyleSheet(QString::fromUtf8("background-color: rgb(43,49,56);\n"
+                                              "color: rgb(255, 255, 255);\n"
+                                              "opacity:0.08;\n"
+                                              "border-radius:4px;"));
+//    ui->tableWidget->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
+//                                                     "selection-background-color:rgba(72,72,76,1);"));
+
+    ui->listView->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255, 0);\n"
+                                                "selection-background-color:rgba(72,72,76,1);"));
+    ui->label->setStyleSheet(QString::fromUtf8("background-color: rgb();\n"
+                                           "color: rgb(126, 126, 126);"));
+    ui->sort_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(19,20,20,0);"));
+    ui->sort_2_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(19,20,20,0);"));
+}
+
+void Widget::light_show()
+{
+
+    this->setObjectName(QString::fromUtf8("便签本"));
+
+    ui->widget->setStyleSheet("QWidget{background-color: rgba(255, 255, 255, 0.3);}");
+
+    ui->frameRight->setStyleSheet(QString::fromUtf8("background:rgba(233,233,233,0);"));
+    ui->verticalLayout_textEdit->setObjectName(QString::fromUtf8("verticalLayout_textEdit"));
+    ui->newKynote->setStyleSheet(QString::fromUtf8("background:rgba(61,107,229,1);\n"
+                                                 "color: rgb(255, 255, 255);"));
+    ui->SearchLine->setStyleSheet(QString::fromUtf8("background-color: rgba(198, 198, 198,0.9);\n"
+                                              "color: rgb(0, 0, 0);\n"
+                                              "opacity:0.08;\n"
+                                              "border-radius:4px;"));
+//    ui->tableWidget->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
+//                                                 "selection-background-color:rgba(255, 255, 255, 0);"));
+
+    ui->listView->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
+                                               "selection-background-color:rgba(255, 255, 255, 0);"));
+
+    ui->label->setStyleSheet(QString::fromUtf8("background-color: rgba();\n"
+                                            "color: rgb(43,49,56);\n"
+                                           "color: rgb(126, 126, 126);"));
+    ui->sort_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(233,233,233,0);"));
+    ui->sort_2_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(233,233,233,0);"));
+
+}
