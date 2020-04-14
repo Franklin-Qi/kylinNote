@@ -55,6 +55,7 @@ Widget::Widget(QWidget *parent) :
     ukui_init();
     ukui_conn();
     QTimer::singleShot(200,this, SLOT(InitData()));
+    black_show();
 }
 
 Widget::~Widget()
@@ -378,14 +379,14 @@ void Widget::migrateNote(QString notePath)
 
 void Widget::set_all_btn_attribute()
 {
-    pixmap1 = QPixmap(":/image/1x/新建-new.png)");
+    pixmap1 = QPixmap(":/image/1x/new.png");
     pixmap2 = QPixmap(":/image/1x/window-close-symbolic.png");
     pixmap3 = QPixmap(":/image/1x/window-minimize-symbolic.png");
     pixmap4 = QPixmap(":/image/1x/open-menu-symbolic.png");
-    pixmap5 = QPixmap(":/image/1x/图标模式.png");
-    pixmap6 = QPixmap(":/image/1x/插入多选框-new.png");
-    pixmap7 = QPixmap(":/image/1x/列表模式.png");
-    pixmap8 = QPixmap(":/image/1x/排列-new.png");
+    pixmap5 = QPixmap(":/image/1x/table.png");
+    pixmap6 = QPixmap(":/image/1x/ Insert_multiple_box .png");
+    pixmap7 = QPixmap(":/image/1x/Symbol.png");
+    pixmap8 = QPixmap(":/image/1x/array.png");
     pixmap9 = QPixmap(":/image/1x/go-bottom-symbolic.png");
 
 
@@ -677,21 +678,21 @@ void Widget::clearSearch()
 
 void Widget::paintEvent(QPaintEvent *event)
 {
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter.setBrush(QBrush(QColor(14, 19, 22)));
-    painter.setPen(Qt::transparent);
-    QRect rect = this->rect();
-    rect.setWidth(rect.width() - 0);
-    rect.setHeight(rect.height() - 0);
-    painter.drawRoundedRect(rect, 7, 7);
-    //也可用QPainterPath 绘制代替 painter.drawRoundedRect(rect, 15, 15);
-    {
-        QPainterPath painterPath;
-        painterPath.addRoundedRect(rect, 7, 7);
-        painter.drawPath(painterPath);
-    }
-    QWidget::paintEvent(event);
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+//    painter.setBrush(QBrush(QColor(14, 19, 22)));
+//    painter.setPen(Qt::transparent);
+//    QRect rect = this->rect();
+//    rect.setWidth(rect.width() - 0);
+//    rect.setHeight(rect.height() - 0);
+//    painter.drawRoundedRect(rect, 7, 7);
+//    //也可用QPainterPath 绘制代替 painter.drawRoundedRect(rect, 15, 15);
+//    {
+//        QPainterPath painterPath;
+//        painterPath.addRoundedRect(rect, 7, 7);
+//        painter.drawPath(painterPath);
+//    }
+//    QWidget::paintEvent(event);
 }
 
 //********************Slots************************//
@@ -1074,6 +1075,7 @@ void Widget::black_show()
     this->setObjectName(QString::fromUtf8("便签本"));
 
     ui->widget->setStyleSheet("QWidget{background-color: rgba(19,20,20, 0.7);}");
+    ui->widget_2->setStyleSheet("QWidget{background-color: rgba();}");
     ui->frameRight->setStyleSheet(QString::fromUtf8("background:rgba(19,20,20,0);"));
     ui->verticalLayout_textEdit->setObjectName(QString::fromUtf8("verticalLayout_textEdit"));
     ui->newKynote->setStyleSheet(QString::fromUtf8("background:rgba(61,107,229,1);\n"
