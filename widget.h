@@ -15,15 +15,7 @@
 #include <QTranslator>
 #include <QStandardPaths>
 #include <QStringLiteral>
-#include "ui_ukui_notebook.h"
-//#include "ui_singleitemwidget.h"
-#include "mythrow.h"
 #include <QPushButton>
-
-#include "noteview.h"
-#include "notedata.h"
-#include "notemodel.h"
-#include "dbmanager.h"
 #include <QSettings>
 #include <QThread>
 #include <QSortFilterProxyModel>
@@ -33,6 +25,13 @@
 #include <QFutureWatcher>
 #include <QtConcurrent>
 #include <QCheckBox>
+
+#include "mythrow.h"
+#include "noteview.h"
+#include "notedata.h"
+#include "notemodel.h"
+#include "dbmanager.h"
+
 
 #include <QBitmap>
 #include <vector>
@@ -65,7 +64,6 @@ public:
 private:
     Ui::Widget *ui;                                 //主ui
     Edit_page *m_notebook;                   //新建便签指针
-    std::vector<Edit_page*> m_Listnote;                   //便签列表笔记
     void set_table_list_page_attribute();
     void set_tablewidget();
     void set_listwidget();

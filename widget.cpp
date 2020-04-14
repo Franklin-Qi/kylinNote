@@ -1,6 +1,5 @@
 #include "widget.h"
 #include "ui_widget.h"
-#include "ukui_notebook.h"
 #include "notewidgetdelegate.h"
 #include "edit_page.h"
 
@@ -84,6 +83,11 @@ void Widget::InitData()
 
     } else {
         emit requestNotesList();
+    }
+
+    /// Check if it is running with an argument (ex. hide)
+    if (qApp->arguments().contains(QStringLiteral("--autostart"))) {
+        //setMainWindowVisibility(false);
     }
 }
 
@@ -452,15 +456,15 @@ void Widget::deleteSelectedNote()
 
 void Widget::onNotePressed(const QModelIndex& index)
 {
-    //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     if(sender() != Q_NULLPTR){
         QModelIndex indexInProxy = m_proxyModel->index(index.row(), 0);
         if(indexInProxy.isValid()){
             // save the position of text edit scrollbar
             if(!m_isTemp && m_currentSelectedNoteProxy.isValid()){
                 //int pos = m_textEdit->verticalScrollBar()->value();
-                //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-                //qDebug() << m_currentSelectedNoteProxy;
+                qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+                qDebug() << m_currentSelectedNoteProxy;
                 QModelIndex indexSrc = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
                 //m_noteModel->setData(indexSrc, QVariant::fromValue(pos), NoteModel::NoteScrollbarPos);
             }
@@ -534,23 +538,20 @@ void Widget::showNoteInEditor(const QModelIndex &noteIndex)
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     //m_textEdit->blockSignals(true);
 
+    /// fixing bug #202
+    //m_textEdit->setTextBackgroundColor(QColor(255,255,255, 0));
+
+
     QString content = noteIndex.data(NoteModel::NoteContent).toString();
     QDateTime dateTime = noteIndex.data(NoteModel::NoteLastModificationDateTime).toDateTime();
     int scrollbarPos = noteIndex.data(NoteModel::NoteScrollbarPos).toInt();
-//    int editcolor = noteIndex.data(NoteModel::NoteColor).toInt();
-//    const NoteWidgetDelegate delegate;
-//    QColor m_color = delegate.intToQcolor(editcolor);
-//    QPalette pal(m_notebook->ui->widget->palette());
-//    qDebug() << "m_color = delegate.intToQcolor(editcolor);" << m_color;
 
-    // set text and background
+    // set text and date
     m_notebook->ui->textEdit->setText(content);
     QString noteDate = dateTime.toString(Qt::ISODate);
     QString noteDateEditor = getNoteDateEditor(noteDate);
-//    pal.setColor(QPalette::Background,m_color);
-//    m_notebook->ui->widget->setAutoFillBackground(true);
-//    m_notebook->ui->widget->setPalette(pal);
-
+    // set scrollbar position
+    //m_textEdit->verticalScrollBar()->setValue(scrollbarPos);
     //m_textEdit->blockSignals(false);
 
     //highlightSearch();
@@ -584,7 +585,7 @@ void Widget::loadNotes(QList<NoteData *> noteList, int noteCounter)
     }
 
     m_noteCounter = noteCounter;
-    qDebug() << "noteCounter" << noteCounter;
+
     // TODO: move this from here
     createNewNoteIfEmpty();
     selectFirstNote();
@@ -745,7 +746,6 @@ void Widget::onColorChanged(const QColor &color)
         m_isColorModified = true;
         m_autoSaveTimer->start(500);
     }
-    m_isTemp = false;
 }
 
 void Widget::exitSlot(){
@@ -865,11 +865,6 @@ void Widget::newSlot()
 {
     //新建一个笔记本
     m_notebook =  new Edit_page(this);
-
-//    //clear text
-//    m_notebook->ui->textEdit->clear();
-//    //clear color
-//    m_notebook->ui->widget->setStyleSheet("background:rgb(0,0,0)");
     m_notebook->show();
     m_notebook->ui->textEdit->setFocus();
 
@@ -940,11 +935,6 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
     m_notebook->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 
     m_notebook->show();
-    //读取item下标 index.row()
-    //for
-    //new note
-    //push back
-    //connect
     m_editors.push_back(m_notebook);
 
     connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));

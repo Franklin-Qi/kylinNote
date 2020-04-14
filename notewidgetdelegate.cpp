@@ -115,6 +115,7 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     case Normal:
         break;
     }
+
     //绘制第一层便签头背景
     int m_noteColor{index.data(NoteModel::NoteColor).toInt()};
     painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
@@ -142,9 +143,8 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
         painter->drawPath(painterPath);
     }
 
-    paintBackground2(painter, opt, index);
+    paintBackground(painter, opt, index);
     paintLabels(painter, option, index);
-
 }
 
 QSize NoteWidgetDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -170,7 +170,7 @@ QTimeLine::State NoteWidgetDelegate::animationState()
     return m_timeLine->state();
 }
 
-void NoteWidgetDelegate::paintBackground2(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void NoteWidgetDelegate::paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyleOptionViewItem opt = option;
     opt.rect.setWidth(option.rect.width() - m_rowRightOffset);
@@ -297,7 +297,6 @@ void NoteWidgetDelegate::paintLabels(QPainter* painter, const QStyleOptionViewIt
 
     // 绘图标题和日期
     title = fmTitle.elidedText(title, Qt::ElideRight, int(titleRectWidth));
-
     drawStr(titleRectPosX, titleRectPosY, titleRectWidth, titleRectHeight, m_titleColor, titleFont, title);
     drawStr(dateRectPosX, dateRectPosY, dateRectWidth, dateRectHeight, m_dateColor, m_dateFont, date);
 }

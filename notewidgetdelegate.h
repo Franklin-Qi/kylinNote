@@ -35,13 +35,11 @@ public:
     void setHoveredIndex(const QModelIndex &hoveredIndex);
     void setRowRightOffset(int rowRightOffset);
     void setActive(bool isActive);
-
     int qcolorToInt(const QColor &color) const;
     QColor intToQcolor(int &intColor) const;
 
 private:
     void paintBackground(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index)const;
-    void paintBackground2(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index)const;
     void paintLabels(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     void paintSeparator(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QString parseDateTime(const QDateTime& dateTime) const;

@@ -176,22 +176,23 @@ void Edit_page::on_chang_btn_clicked()
 
 void Edit_page::contextMenuEvent(QContextMenuEvent *event)
 {
-   Q_UNUSED(event);
-   QMenu * menu = new QMenu(this);
+    Q_UNUSED(event);
+    QMenu * menu = new QMenu(this);
 
-   QAction * delete_the_widget = new QAction(tr("关闭"));
-   QAction * t1 = new QAction(tr("新建"));
-   QAction * t2 = new QAction(tr("删除"));
-   QAction * t3 = new QAction(tr("打开便签本"));
-   connect(t1, SIGNAL(triggered()), this, SLOT(add_new_page()));
-   connect(delete_the_widget, SIGNAL(triggered()), this, SLOT(clear_the_page()));
-   connect(t3, SIGNAL(triggered()), this, SLOT(show_note_page()));
-   menu->addAction(delete_the_widget);
-   menu->addAction(t1);
-   menu->addAction(t2);
-   menu->addAction(t3);
-   menu->move(cursor().pos()); //让菜单显示的位置在鼠标的坐标上
-   menu->show();
+
+    QAction * delete_the_widget = new QAction(tr("关闭"));
+    QAction * t1 = new QAction(tr("新建"));
+    QAction * t2 = new QAction(tr("删除"));
+    QAction * t3 = new QAction(tr("打开便签本"));
+    connect(t1, SIGNAL(triggered()), this, SLOT(add_new_page()));
+    connect(delete_the_widget, SIGNAL(triggered()), this, SLOT(clear_the_page()));
+    connect(t3, SIGNAL(triggered()), this, SLOT(show_note_page()));
+    menu->addAction(delete_the_widget);
+    menu->addAction(t1);
+    menu->addAction(t2);
+    menu->addAction(t3);
+    menu->move(cursor().pos()); //让菜单显示的位置在鼠标的坐标上
+    menu->show();
 }
 
 void Edit_page::clear_the_page()
