@@ -40,6 +40,11 @@ Edit_page::Edit_page(Widget* page, QWidget *parent) :
   , m_editColor(0,0,0)
 {
     ui->setupUi(this);
+    //标题
+    this->setWindowTitle(tr("ukui-memo"));
+    //任务栏图标
+    setWindowIcon(QIcon(":/image/kylin-notebook.svg"));
+
     QBitmap bmp(this->size());
     bmp.fill();
     QPainter p(&bmp);

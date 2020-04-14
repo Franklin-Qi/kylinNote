@@ -204,37 +204,26 @@ void Widget::ukui_init()
     m_countLabel = ui->label;
     m_sortLabel = ui->sort_btn;
 
-    m_trashButton->setToolTip(QStringLiteral("Delete Selected Note"));
-    m_newKynote->setToolTip(QStringLiteral("Create New Note"));
+//    m_trashButton->setToolTip(QStringLiteral("Delete Selected Note"));
+//    m_newKynote->setToolTip(QStringLiteral("Create New Note"));
 //    //窗口属性
 //    setWindowFlags(Qt::FramelessWindowHint);//开启窗口无边框
 //    setWindowOpacity(0.8);//窗口透明度
-//    //弹出位置
-//    QDesktopWidget *desktop = QApplication::desktop();
-//    move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
+    //弹出位置
+    QDesktopWidget *desktop = QApplication::desktop();
+    move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
 //    //组件属性
 //    //ui->listWidget->setAttribute(Qt::WA_TranslucentBackground);//设置透明度
 //    //ui->newKynote->setAttribute(Qt::WA_TranslucentBackground);
-//    //标题
-//    this->setWindowTitle(tr("Note"));
-//    setWindowIcon(QIcon(":/new/prefix1/SVG/kylin-notebook.svg"));
+    //标题
+    this->setWindowTitle(tr("ukui-note"));
+    //任务栏图标
+    setWindowIcon(QIcon(":/image/kylin-notebook.svg"));
 //    //按钮
 //    ui->newKynote->setStyleSheet(tristateButton(QPushButton,:/new/prefix1/SVG/new-b));
 //    ui->pushButton_Mini->setStyleSheet(tristateButton(QPushButton,:/new/prefix1/SVG/dark_theme/min));
 //    //ui->pushButton_Exit->setStyleSheet(tristateButton(QPushButton,:/new/prefix1/SVG/dark_theme/close));
-//    //搜索框
-//    ui->SearchLine->setPlaceholderText(QStringLiteral("Search..."));
 
-
-    /*********ListWidget init ************/
-    //设置滚动条样式(使用.qss)
-    //ui->listWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);//隐藏垂直滚动条
-    //ui->listWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);//隐藏水平滚动条
-
-//    ui->listWidget->setStyleSheet("QListWidget::Item:hover{background-color:rgb(0,0,0);}"
-//                                    "QlistWidget::Item:selected{background-color:rgb(0,0,0);}"
-//                                    "QListWidget::Item:selected:!active{active{background-color:red;}");
-    //ui->listWidget->verticalScrollBar()->setStyleSheet("QScrollBar{width:1px;}");
     QBitmap bmp(this->size());
     bmp.fill();
     QPainter p(&bmp);
@@ -246,11 +235,10 @@ void Widget::ukui_init()
 
     //setWindowOpacity(0.9);
     setWindowFlags(Qt::FramelessWindowHint);
-    ui->SearchLine->setPlaceholderText(tr("搜索内容或修改时间内容"));//设置详细输入框的提示信息
+    //搜索框
+    ui->SearchLine->setPlaceholderText(tr("Search"));//设置详细输入框的提示信息
 
     set_table_list_page_attribute();
-    //set_tablewidget();
-    //set_listwidget();
     set_all_btn_attribute();
 
     ui->tableView->hide();

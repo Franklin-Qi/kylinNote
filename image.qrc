@@ -88,5 +88,6 @@
         <file>image/SVG/调整.svg</file>
         <file>image/SVG/转换成便签页.svg</file>
         <file>image/SVG/项目符号-new.svg</file>
+        <file>image/kylin-notebook.svg</file>
     </qresource>
 </RCC>
