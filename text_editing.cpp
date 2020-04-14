@@ -66,14 +66,12 @@ Text_editing::~Text_editing()
 
 void Text_editing::set_btn_image()
 {
- pixmap1=QPixmap(":/image/1x/bold.png");
- pixmap2=QPixmap(":/image/1x/Italic.png");
- pixmap3=QPixmap(":/image/1x/under_line-new.png");
- pixmap4=QPixmap(":/image/1x/del_line.png");
- pixmap5=QPixmap(":/image/1x/Symbol.png");
- pixmap6=QPixmap(":/image/1x/number.png");
- pixmap7=QPixmap(":/image/1x/)");
- pixmap8=QPixmap(":/image/1x/)");
+    pixmap1=QPixmap(":/image/1x/bold.png");
+    pixmap2=QPixmap(":/image/1x/Italic.png");
+    pixmap3=QPixmap(":/image/1x/under_line-new.png");
+    pixmap4=QPixmap(":/image/1x/del_line.png");
+    pixmap5=QPixmap(":/image/1x/Symbol.png");
+    pixmap6=QPixmap(":/image/1x/number.png");
 
 
  ui->BoldBtn->setIcon(pixmap1);

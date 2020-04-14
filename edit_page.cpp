@@ -359,9 +359,9 @@ void Edit_page::wight_btn_change()
 
 void Edit_page::set_all_btn_attribute()
 {
-    pixmap1 = QPixmap(":/image/1x/便签颜色@2x.png");
-    pixmap2 = QPixmap(":/image/1x/调整.png");
-    pixmap3 = QPixmap(":/image/1x/color.png");
+    pixmap1 = QPixmap(":/image/1x/note_color.png");
+    pixmap2 = QPixmap(":/image/1x/adjustment.png");
+    pixmap3 = QPixmap(":/image/1x/note_color.png");
     ui->chang_btn->setIcon(pixmap2);
     ui->color_btn->setIcon(pixmap3);
 }

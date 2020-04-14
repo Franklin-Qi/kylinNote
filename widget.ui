@@ -129,10 +129,7 @@ color: rgb(255, 255, 255);</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(43,49,56);
-color: rgb(255, 255, 255);
-opacity:0.08;
-border-radius:4px;</string>
+            <string notr="true"/>
            </property>
           </widget>
          </item>
@@ -416,7 +413,7 @@ color: rgb(126, 126, 126);</string>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(19,20,20);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string/>
@@ -444,7 +441,7 @@ color: rgb(126, 126, 126);</string>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(19,20,20);</string>
+        <string notr="true"/>
        </property>
        <property name="text">
         <string/>
