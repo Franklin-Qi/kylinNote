@@ -52,7 +52,7 @@
 
 #include <QBitmap>
 #include <vector>
-//#include "edit_page.h"
+#include "edit_page.h"
 #include "tanchuang.h"
 #include "ui_edit_page.h"
 
@@ -63,7 +63,7 @@
 namespace Ui {
 class Widget;
 }
-class Edit_page;
+//class Edit_page;
 class Widget : public QWidget
 {
     Q_OBJECT
@@ -72,8 +72,9 @@ public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
 
-public:
+//public:
     std::vector<Edit_page*> m_editors;
+
     int dack_wight_flag;
     QTranslator *translator;                        //国际化
     void error_throw();                             //异常处理抛出
@@ -173,7 +174,7 @@ private:
 private slots:
     void InitData();
     void loadNotes(QList<NoteData *> noteList, int noteCounter);
-    void onTextEditTextChanged();
+    void onTextEditTextChanged(const QModelIndex &index);
     void onColorChanged(const QColor &color);
     void onTrashButtonClicked();
     void onNotePressed(const QModelIndex &index);

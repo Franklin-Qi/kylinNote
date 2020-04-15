@@ -57,12 +57,12 @@ void tanchuang::on_pushButton_2_clicked()
     close_flage = 1;
     this->close();
     pNotebook->close();
-//    if(ui->checkBox->isChecked()==true)
-//    {
-//        for (auto it = pNotebook->m_editors.begin(); it!= pNotebook->m_editors.end();it++) {
-//            (*it)->close();
-//        }
-//    }
+    if(ui->checkBox->isChecked()==true)
+    {
+        for (auto it = pNotebook->m_editors.begin(); it!= pNotebook->m_editors.end();it++) {
+            (*it)->close();
+        }
+    }
 }
 
 void tanchuang::color_clicked()
