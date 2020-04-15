@@ -89,5 +89,13 @@
         <file>image/SVG/转换成便签页.svg</file>
         <file>image/SVG/项目符号-new.svg</file>
         <file>image/kylin-notebook.svg</file>
+        <file>image/1x/sourch.png</file>
+        <file>image/1x/skin.png</file>
+        <file>image/1x/more_block.png</file>
+        <file>image/1x/mini_block.png</file>
+        <file>image/1x/close_block.png</file>
+        <file>image/1x/close_light.png</file>
+        <file>image/1x/mini_light.png</file>
+        <file>image/1x/more_light.png</file>
     </qresource>
 </RCC>
