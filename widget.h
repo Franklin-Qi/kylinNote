@@ -88,6 +88,7 @@ private:
     void light_show();
 
     void set_all_btn_attribute();
+    void sourch_Icon();
 
 
     QPixmap pixmap1;
@@ -101,11 +102,13 @@ private:
     QPixmap pixmap9;
     QPixmap pixmap10;
     QPixmap pixmap11;
+    QPixmap pixmap12;
     int listflag;                                  //平铺/展开列表切换
     int sortflag;                                  //升降序切换
     tanchuang* tuichu;
 
-
+    QAction *searchAction;
+    QAction *delAction;
 
     QTimer* m_autoSaveTimer;
     QSettings* m_settingsDatabase;
@@ -184,7 +187,11 @@ private slots:
     void listDoubleClickSlot(const QModelIndex &);  //item双击事件槽函数
     void lineeditChangedSlot(const QString &text);  //搜索栏清空按钮显示
     void sortSlot();                                //升/降序槽函数
-    void on_sort_btn_clicked();                     //主题切换
+    void on_sort_2_btn_clicked();                   //主题切换
+    void delAction_del_SearchLine();                //
+
+    void on_SearchLine_textChanged(const QString &arg1);
+
 
 protected:
     void paintEvent(QPaintEvent *event);

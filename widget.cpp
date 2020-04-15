@@ -56,6 +56,7 @@ Widget::Widget(QWidget *parent) :
     ukui_conn();
     QTimer::singleShot(200,this, SLOT(InitData()));
     black_show();
+    sourch_Icon();
 }
 
 Widget::~Widget()
@@ -372,16 +373,22 @@ void Widget::set_all_btn_attribute()
     pixmap3 = QPixmap(":/image/1x/window-minimize-symbolic.png");
     pixmap4 = QPixmap(":/image/1x/open-menu-symbolic.png");
     pixmap5 = QPixmap(":/image/1x/table.png");
-    pixmap6 = QPixmap(":/image/1x/ Insert_multiple_box .png");
+   // pixmap6 = QPixmap(":/image/1x/ Insert_multiple_box .png");
+    pixmap6 = QPixmap(":/image/1x/delete.png");
     pixmap7 = QPixmap(":/image/1x/Symbol.png");
     pixmap8 = QPixmap(":/image/1x/array.png");
-    pixmap9 = QPixmap(":/image/1x/go-bottom-symbolic.png");
+   // pixmap9 = QPixmap(":/image/1x/go-bottom-symbolic.png");
+    pixmap9 = QPixmap(":/image/1x/skin.png");
+    pixmap10 = QPixmap(":/image/1x/close_block.png");
+    pixmap11 = QPixmap(":/image/1x/mini_block.png");
+    pixmap12 = QPixmap(":/image/1x/more_block.png");
 
 
     ui->newKynote->setIcon(pixmap1);
-    ui->pushButton_Exit->setIcon(pixmap2);
-    ui->pushButton_Mini->setIcon(pixmap3);
-    ui->set_btn->setIcon(pixmap4);
+    ui->pushButton_Exit->setIcon(pixmap10);
+    ui->pushButton_Mini->setIcon(pixmap11);
+    ui->set_btn->setIcon(pixmap12);
+
     ui->change_page_btn->setIcon(pixmap5);
     ui->add_more_btn->setIcon(pixmap6);
     ui->sort_btn->setIcon(pixmap8);
@@ -1049,72 +1056,97 @@ void Widget::sortSlot()
     }
 }
 
-void Widget::on_sort_btn_clicked()
+void Widget::sourch_Icon()
+{
+    searchAction = new QAction(ui->SearchLine);
+    searchAction->setIcon(QIcon(":/image/1x/sourch.png"));
+    ui->SearchLine->addAction(searchAction,QLineEdit::LeadingPosition);  //图片在左侧
+
+    delAction = new QAction(ui->SearchLine);
+    delAction->setIcon(QIcon(":/image/1x/close_light.png"));
+    connect(delAction, SIGNAL(triggered()), this, SLOT(delAction_del_SearchLine()));
+}
+void Widget::delAction_del_SearchLine()
+{
+    ui->SearchLine->setText("");
+}
+
+
+void Widget::on_sort_2_btn_clicked()
 {
     if(dack_wight_flag)
     {
 
-        //light_show();
+        light_show();
         dack_wight_flag = 0;
     }else{
 
 
-        //black_show();
+        black_show();
         dack_wight_flag = 1;
     }
-
 }
+
 
 void Widget::black_show()
 {
     this->setObjectName(QString::fromUtf8("便签本"));
-
-    ui->widget->setStyleSheet("QWidget{background-color: rgba(19,20,20, 0.7);}");
+    ui->widget->setStyleSheet("QWidget{background-color: rgba(19, 20, 20,, 0.7);}");
+    ui->widget_3->setStyleSheet("QWidget{background-color: rgba(19, 20, 20,, 0.7);}");
     ui->widget_2->setStyleSheet("QWidget{background-color: rgba();}");
-    ui->frameRight->setStyleSheet(QString::fromUtf8("background:rgba(19,20,20,0);"));
-    ui->verticalLayout_textEdit->setObjectName(QString::fromUtf8("verticalLayout_textEdit"));
     ui->newKynote->setStyleSheet(QString::fromUtf8("background:rgba(61,107,229,1);\n"
-                                                 "color: rgb(255, 255, 255);"));
+                                                   "color: rgb(255, 255, 255);"));
     ui->SearchLine->setStyleSheet(QString::fromUtf8("background-color: rgb(43,49,56);\n"
-                                              "color: rgb(255, 255, 255);\n"
-                                              "opacity:0.08;\n"
-                                              "border-radius:4px;"));
-//    ui->tableWidget->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
-//                                                     "selection-background-color:rgba(72,72,76,1);"));
-
+                                                    "color: rgb(255, 255, 255);\n"
+                                                    "opacity:0.08;\n"
+                                                    "border-radius:4px;"));
     ui->listView->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255, 0);\n"
-                                                "selection-background-color:rgba(72,72,76,1);"));
+                                                  "selection-background-color:rgba(72,72,76,1);"));
     ui->label->setStyleSheet(QString::fromUtf8("background-color: rgb();\n"
-                                           "color: rgb(126, 126, 126);"));
+                                               "color: rgb(126, 126, 126);"));
     ui->sort_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(19,20,20,0);"));
     ui->sort_2_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(19,20,20,0);"));
+    ui->add_more_btn->setStyleSheet("background-color: rgb(43,49,56);\n");
+    ui->change_page_btn->setStyleSheet("background-color: rgb(43,49,56);\n");
+    ui->pushButton_Exit->setStyleSheet("border-image: url(:/image/1x/close_light.png);");
+    ui->pushButton_Mini->setStyleSheet("border-image: url(:/image/1x/mini_light.png);");
+    ui->set_btn->setStyleSheet("border-image: url(:/image/1x/more_light.png);");
 }
 
 void Widget::light_show()
 {
-
     this->setObjectName(QString::fromUtf8("便签本"));
-
-    ui->widget->setStyleSheet("QWidget{background-color: rgba(255, 255, 255, 0.3);}");
-
-    ui->frameRight->setStyleSheet(QString::fromUtf8("background:rgba(233,233,233,0);"));
-    ui->verticalLayout_textEdit->setObjectName(QString::fromUtf8("verticalLayout_textEdit"));
+    ui->widget->setStyleSheet("QWidget{background-color: rgba(240, 240, 240, 0.7);}");
+    ui->widget_3->setStyleSheet("QWidget{background-color: rgba();}");
     ui->newKynote->setStyleSheet(QString::fromUtf8("background:rgba(61,107,229,1);\n"
-                                                 "color: rgb(255, 255, 255);"));
+                                                   "color: rgb(255, 255, 255);"));
     ui->SearchLine->setStyleSheet(QString::fromUtf8("background-color: rgba(198, 198, 198,0.9);\n"
-                                              "color: rgb(0, 0, 0);\n"
-                                              "opacity:0.08;\n"
-                                              "border-radius:4px;"));
-//    ui->tableWidget->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
-//                                                 "selection-background-color:rgba(255, 255, 255, 0);"));
-
+                                                    "color: rgb(0, 0, 0);\n"
+                                                    "opacity:0.08;\n"
+                                                    "border-radius:4px;"));
     ui->listView->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
-                                               "selection-background-color:rgba(255, 255, 255, 0);"));
-
+                                                  "selection-background-color:rgba(255, 255, 255, 0);"));
     ui->label->setStyleSheet(QString::fromUtf8("background-color: rgba();\n"
-                                            "color: rgb(43,49,56);\n"
-                                           "color: rgb(126, 126, 126);"));
+                                               "color: rgb(43,49,56);\n"
+                                               "color: rgb(126, 126, 126);"));
     ui->sort_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(233,233,233,0);"));
     ui->sort_2_btn->setStyleSheet(QString::fromUtf8("background-color: rgba(233,233,233,0);"));
+    ui->add_more_btn->setStyleSheet("background-color: rgb(198, 198, 198);\n");
+    ui->change_page_btn->setStyleSheet("background-color: rgb(198, 198, 198);\n");
+    ui->pushButton_Exit->setStyleSheet("border-image: url(:/image/1x/close_block.png);");
+    ui->pushButton_Mini->setStyleSheet("border-image: url(:/image/1x/mini_block.png);");
+    ui->set_btn->setStyleSheet("border-image: url(:/image/1x/more_block.png);");
+}
 
+
+void Widget::on_SearchLine_textChanged(const QString &arg1)
+{
+    if(ui->SearchLine->text().isEmpty()){
+        ui->SearchLine->addAction(searchAction,QLineEdit::LeadingPosition);  //图片在左侧
+        ui->SearchLine->removeAction(delAction);
+    }
+    else{
+        ui->SearchLine->removeAction(searchAction);
+        ui->SearchLine->addAction(delAction,QLineEdit::TrailingPosition);  //图片在右侧
+    }
 }
