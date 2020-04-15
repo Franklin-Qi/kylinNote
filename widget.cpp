@@ -25,7 +25,7 @@
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
-  , m_notebook(new Edit_page(this))
+  //, m_notebook(new Edit_page(this))
   , m_autoSaveTimer(new QTimer(this))
   , m_settingsDatabase(Q_NULLPTR)
   , m_ukui_SearchLine(Q_NULLPTR)
@@ -63,6 +63,7 @@ Widget::~Widget()
 {
     for (auto it = m_editors.begin(); it!= m_editors.end();it++) {
         delete *it;
+        qDebug()<<"aa-----------------------";
     }
     m_editors.clear();
     delete ui;
@@ -698,46 +699,57 @@ void Widget::paintEvent(QPaintEvent *event)
 
 //********************Slots************************//
 
-void Widget::onTextEditTextChanged()
+void Widget::onTextEditTextChanged(const QModelIndex &index)
 {
     qDebug() << "receive signal textchange";
-    if(m_currentSelectedNoteProxy.isValid()){
-        m_notebook->ui->textEdit->blockSignals(true);
-        QString content = m_currentSelectedNoteProxy.data(NoteModel::NoteContent).toString();
-        if(m_notebook->ui->textEdit->toPlainText() != content){
+    qDebug() << index;
+    if(index.isValid()){
+        //m_notebook->ui->textEdit->blockSignals(true);
+        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+        QString content = index.data(NoteModel::NoteContent).toString();
+        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+
+        //for (size_t i = 0;i < m_editors.size();i++) {
+            qDebug()<<"==========="<<m_editors[index.row()]->ui->textEdit->toPlainText();
+        ///}
+        if(m_editors[index.row()]->ui->textEdit->toPlainText() != content){
 
             // move note to the top of the list
-            QModelIndex sourceIndex = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
+            qDebug() << "########"<< index;
+            QModelIndex sourceIndex = m_proxyModel->mapToSource(index);
+            qDebug() << "!!!!!!!!" << sourceIndex;
             qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-            qDebug() << m_currentSelectedNoteProxy.row(); //0
+            qDebug() << index.row(); //0
             bool b = ui->SearchLine->text().isEmpty();
             qDebug() << sourceIndex.row();  //0
-            if(m_currentSelectedNoteProxy.row() != 0){
-                moveNoteToTop();
+            if(index.row() != 0){
+                //moveNoteToTop();
             }else if(!ui->SearchLine->text().isEmpty() && sourceIndex.row() != 0){
-                m_noteView->setAnimationEnabled(false);
-                moveNoteToTop();
-                m_noteView->setAnimationEnabled(true);
+                //m_noteView->setAnimationEnabled(false);
+                //moveNoteToTop();
+                //m_noteView->setAnimationEnabled(true);
             }
 
             // Get the new data
-            QString firstline = getFirstLine(m_notebook->ui->textEdit->toPlainText());
+            QString firstline = getFirstLine(m_editors[index.row()]->ui->textEdit->toPlainText());
             QDateTime dateTime = QDateTime::currentDateTime();
             QString noteDate = dateTime.toString(Qt::ISODate);
 
             // update model
             QMap<int, QVariant> dataValue;
-            dataValue[NoteModel::NoteContent] = QVariant::fromValue(m_notebook->ui->textEdit->toPlainText());
+            dataValue[NoteModel::NoteContent] = QVariant::fromValue(m_editors[index.row()]->ui->textEdit->toPlainText());
             dataValue[NoteModel::NoteFullTitle] = QVariant::fromValue(firstline);
             dataValue[NoteModel::NoteLastModificationDateTime] = QVariant::fromValue(dateTime);
 
-            QModelIndex index = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
-            m_noteModel->setItemData(index, dataValue);
+            qDebug()<<"now change text is"<< firstline;
+            QModelIndex index2 = m_proxyModel->mapToSource(index);
+            m_noteModel->setItemData(index2, dataValue);
 
             m_isContentModified = true;
-            m_autoSaveTimer->start(500);
+            //m_autoSaveTimer->start(500);
+            saveNoteToDB(index);
         }
-        m_notebook->ui->textEdit->blockSignals(false);
+        //m_notebook->ui->textEdit->blockSignals(false);
 
         //获取当前调色板颜色
 
@@ -883,9 +895,9 @@ void Widget::createNewNote()
 void Widget::newSlot()
 {
     //新建一个笔记本
-    m_notebook =  new Edit_page(this);
-    m_notebook->show();
-    m_notebook->ui->textEdit->setFocus();
+    //m_notebook =  new Edit_page(this);
+    //m_notebook->show();
+    //m_notebook->ui->textEdit->setFocus();
 
     //如果搜索栏有内容,则在新建便签时清空
     if(!m_ukui_SearchLine->text().isEmpty())
@@ -905,8 +917,10 @@ void Widget::newSlot()
 
     this->createNewNote();
     m_countLabel->setText(QObject::tr("%1 records in total").arg(m_proxyModel->rowCount()));
-    connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));
-    connect(m_notebook,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
+
+
+   // connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));
+   // connect(m_notebook,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
 }
 
 void Widget::onTrashButtonClicked()
@@ -938,8 +952,12 @@ void Widget::listClickSlot()
 //* 将所选便笺内容加载到textedit
 void Widget::listDoubleClickSlot(const QModelIndex& index)
 {
+    //QModelIndex  * p= const_cast<QModelIndex*>(&index);
     qDebug() << "listDoubleClickSlot(const QModelIndex& index)" << index;
-    m_notebook =  new Edit_page(this);
+    QModelIndex sourceIndex = m_proxyModel->mapToSource(index);
+    qDebug() << "!!!!!!!!listDoubleClickSlot" << sourceIndex;
+    m_notebook =  new Edit_page(this,index);
+    m_editors.push_back(m_notebook);
 
     if(sender() != Q_NULLPTR){
         //获取当前选中item下标
@@ -955,10 +973,12 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
     m_notebook->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 
     m_notebook->show();
-    m_editors.push_back(m_notebook);
 
-    connect(m_notebook,SIGNAL(texthasChanged()), this,SLOT(onTextEditTextChanged()));
-    connect(m_notebook,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
+    size_t last= m_editors.size()  ;
+   // for (int it = 0; it<last ;it++) {
+        connect(m_notebook ,SIGNAL(texthasChanged(QModelIndex)), this,SLOT(onTextEditTextChanged(QModelIndex)));
+        connect(m_notebook ,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
+   // }
 }
 
 

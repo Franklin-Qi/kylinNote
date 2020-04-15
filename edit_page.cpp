@@ -34,11 +34,13 @@
 
 static int count =0;
 
-Edit_page::Edit_page(Widget* page, QWidget *parent) :
+Edit_page::Edit_page(Widget* page, QModelIndex index, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Edit_page)
-  , m_editColor(0,0,0)
+    ui(new Ui::Edit_page),
+    m_editColor(0,0,0),
+    m_index(index)
 {
+     qDebug()<<"aa"<<++count;
     ui->setupUi(this);
     //标题
     this->setWindowTitle(tr("ukui-memo"));
@@ -74,6 +76,7 @@ Edit_page::Edit_page(Widget* page, QWidget *parent) :
 
 Edit_page::~Edit_page()
 {
+    qDebug()<<"aa"<<count--;
     delete ui;
 }
 
@@ -115,8 +118,8 @@ void Edit_page::set_text_editing_page()
 
 void Edit_page::textChangedSlot()
 {
-    emit texthasChanged();
     qDebug() << "emit textchange";
+    emit texthasChanged(m_index);
 }
 
 //chu ti
@@ -415,9 +418,9 @@ void Edit_page::clear_the_page()
 
 void Edit_page::add_new_page()
 {
-    Edit_page *new_page = new Edit_page(this->pNotebook);
-    this->pNotebook->m_editors.push_back(new_page);
-    new_page->show();
+//    Edit_page *new_page = new Edit_page(this->pNotebook,NULL);
+//    this->pNotebook->m_editors.push_back(new_page);
+//    new_page->show();
 }
 
 void Edit_page::show_note_page()

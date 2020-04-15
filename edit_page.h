@@ -26,23 +26,26 @@
 #include <QPainter>
 #include <QColor>
 #include "cai_tou.h"
+#include <QModelIndex>
 
 namespace Ui {
 class Edit_page;
 }
 class Widget;
+
 class Edit_page : public QWidget
 {
     Q_OBJECT
 
 public:
-    Edit_page(Widget* p , QWidget *parent = nullptr);
+    Edit_page(Widget* p , QModelIndex index, QWidget *parent = nullptr);
     ~Edit_page();
 
     Ui::Edit_page *ui;
     Widget* pNotebook;
     QColor m_editColor;
     cai_tou *caitou;
+    QModelIndex m_index;
 
 
     void contextMenuEvent(QContextMenuEvent *event);
@@ -96,7 +99,7 @@ private:
 
 
 signals:
-    void texthasChanged();
+    void texthasChanged(const QModelIndex &index);
     void colorhasChanged(const QColor &color);
 };
 

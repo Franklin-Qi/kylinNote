@@ -148,7 +148,7 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 
     //绘制第二层底色背景
     painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter->setBrush(QBrush(QColor(43, 49, 56)));
+    painter->setBrush(QBrush(QColor(0, 0, 0)));
     painter->setPen(Qt::transparent);
 
     opt.rect.setWidth(678);
@@ -238,7 +238,7 @@ void NoteWidgetDelegate::paintBackground(QPainter *painter, const QStyleOptionVi
     }else if((index.row() !=  m_currentSelectedIndex.row() - 1)
              && (index.row() !=  m_hoveredIndex.row() - 1)){
         painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-        painter->fillRect(option.rect, QBrush(m_defaultColor));//黑色
+        //painter->fillRect(option.rect, QBrush(m_defaultColor));//黑色
     }
 
 }
