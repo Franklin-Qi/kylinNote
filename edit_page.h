@@ -42,6 +42,7 @@ public:
     Ui::Edit_page *ui;
     Widget* pNotebook;
     QColor m_editColor;
+    cai_tou *caitou;
 
 
     void contextMenuEvent(QContextMenuEvent *event);
@@ -92,7 +93,7 @@ private:
     QTimer *timer;
     QString color[11];
     QColor color_num[11];
-    cai_tou *caitou;
+
 
 signals:
     void texthasChanged();

@@ -551,9 +551,15 @@ void Widget::showNoteInEditor(const QModelIndex &noteIndex)
     QString content = noteIndex.data(NoteModel::NoteContent).toString();
     QDateTime dateTime = noteIndex.data(NoteModel::NoteLastModificationDateTime).toDateTime();
     int scrollbarPos = noteIndex.data(NoteModel::NoteScrollbarPos).toInt();
+    int noteColor = noteIndex.data(NoteModel::NoteColor).toInt();
 
+    const NoteWidgetDelegate delegate;
+    QColor m_color = delegate.intToQcolor(noteColor);
     // set text and date
     m_notebook->ui->textEdit->setText(content);
+    m_notebook->caitou->color_widget = QColor(m_color);
+    m_notebook->update();
+
     QString noteDate = dateTime.toString(Qt::ISODate);
     QString noteDateEditor = getNoteDateEditor(noteDate);
     // set scrollbar position
@@ -931,6 +937,7 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
     if(sender() != Q_NULLPTR){
         //获取当前选中item下标
         QModelIndex indexInProxy = m_proxyModel->index(index.row(), 0);
+        //加载便签
         selectNote(indexInProxy);
         m_noteView->setCurrentRowActive(false);
     }
