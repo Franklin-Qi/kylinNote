@@ -55,10 +55,13 @@
 #include "edit_page.h"
 #include "tanchuang.h"
 #include "ui_edit_page.h"
+extern int sink;
 
 #define     tristateButton(className,imageUrl)     (""#className"{image:url("#imageUrl".svg);}   \
     "#className":hover{image:url("#imageUrl"-hover.svg);}  \
     "#className":pressed{image:url("#imageUrl"-click.svg);}")
+
+
 
 namespace Ui {
 class Widget;
