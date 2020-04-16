@@ -24,6 +24,7 @@
 #include <QFontDatabase>
 #include <QtMath>
 #include "notemodel.h"
+#include "widget.h"
 
 
 NoteWidgetDelegate::NoteWidgetDelegate(QObject *parent)
@@ -36,7 +37,7 @@ NoteWidgetDelegate::NoteWidgetDelegate(QObject *parent)
       m_ActiveColor(218, 233, 239),
       m_notActiveColor(175, 212, 228),                      //默认选中背景色
       m_hoverColor(80, 80, 80),                          //悬停颜色
-      m_selectColor(40,40,40),                                      //选中颜色
+      m_selectColor(43, 49, 60),                                      //选中颜色43, 49, 60   40,40,40
       m_applicationInactiveColor(207, 207, 207),            //应用程序可见，但未选择显示在前面时背景色
       m_separatorColor(221, 221, 221),
       m_defaultColor(0, 0, 0),
@@ -147,10 +148,19 @@ void NoteWidgetDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     }
 
     //绘制第二层底色背景
+    if(sink == 0)
+    {
+       qDebug()<<sink<<"-----------";
+        QColor aa = QColor(40,40,46);
+    }
     painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-    painter->setBrush(QBrush(QColor(0, 0, 0)));
+    if(sink == 0)
+    {
+        painter->setBrush(QColor(40,40,46));
+    }else{
+        painter->setBrush(QColor(245,245,245));
+    }
     painter->setPen(Qt::transparent);
-
     opt.rect.setWidth(678);
     opt.rect.setHeight(opt.rect.height() - 0);
     opt.rect.setLeft(opt.rect.left() + 5);
@@ -197,7 +207,11 @@ void NoteWidgetDelegate::paintBackground(QPainter *painter, const QStyleOptionVi
         if(qApp->applicationState() == Qt::ApplicationActive){      //返回应用程序的当前状态。
             if(m_isActive){//用指定的画笔填充给定的矩形。
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+                if(sink == 0){
                 painter->setBrush(QBrush(m_selectColor));
+                }else{
+                    painter->setBrush(QBrush(QColor(255,255,255)));
+                }
                 painter->setPen(Qt::transparent);
                 QPainterPath painterPath;
                 painterPath.addRoundedRect(opt.rect, 0, 0);
@@ -205,8 +219,11 @@ void NoteWidgetDelegate::paintBackground(QPainter *painter, const QStyleOptionVi
                 //painter->fillRect(option.rect, QBrush(m_ActiveColor));//浅蓝
             }else{
                 painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+                if(sink == 0){
                 painter->setBrush(QBrush(m_selectColor));
-                painter->setPen(Qt::transparent);
+                }else{
+                    painter->setBrush(QBrush(QColor(255,255,255)));
+                }                painter->setPen(Qt::transparent);
                 QPainterPath painterPath;
                 painterPath.addRoundedRect(opt.rect, 0, 0);
                 painter->drawPath(painterPath);
@@ -228,7 +245,11 @@ void NoteWidgetDelegate::paintBackground(QPainter *painter, const QStyleOptionVi
     else if((option.state & QStyle::State_MouseOver) == QStyle::State_MouseOver){
         //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+        if(sink == 0){
         painter->setBrush(QBrush(m_hoverColor));
+        }else{
+           painter->setBrush(QBrush(QColor(205,205,205)));
+        }
         painter->setPen(Qt::transparent);
         QPainterPath painterPath;
         painterPath.addRoundedRect(opt.rect, 0, 0);
@@ -314,8 +335,14 @@ void NoteWidgetDelegate::paintLabels(QPainter* painter, const QStyleOptionViewIt
 
     // 绘图标题和日期
     title = fmTitle.elidedText(title, Qt::ElideRight, int(titleRectWidth));
-    drawStr(titleRectPosX, titleRectPosY, titleRectWidth, titleRectHeight, m_titleColor, titleFont, title);
-    drawStr(dateRectPosX, dateRectPosY, dateRectWidth, dateRectHeight, m_dateColor, m_dateFont, date);
+    if(sink == 1)
+    {
+        drawStr(titleRectPosX, titleRectPosY, titleRectWidth, titleRectHeight, QColor(0,0,0), titleFont, title);
+        drawStr(dateRectPosX, dateRectPosY, dateRectWidth, dateRectHeight, QColor(0,0,0), m_dateFont, date);
+    }else{
+        drawStr(titleRectPosX, titleRectPosY, titleRectWidth, titleRectHeight, QColor(244,244,244), titleFont, title);
+        drawStr(dateRectPosX, dateRectPosY, dateRectWidth, dateRectHeight, QColor(244,244,244), m_dateFont, date);
+    }
 }
 
 void NoteWidgetDelegate::paintSeparator(QPainter*painter, const QStyleOptionViewItem&option, const QModelIndex&index) const

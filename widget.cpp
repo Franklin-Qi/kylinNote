@@ -21,6 +21,7 @@
 #include "edit_page.h"
 
 #define FIRST_LINE_MAX 80
+int sink = 0;
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -57,6 +58,8 @@ Widget::Widget(QWidget *parent) :
     QTimer::singleShot(200,this, SLOT(InitData()));
     black_show();
     sourch_Icon();
+    dack_wight_flag = -2;
+
 }
 
 Widget::~Widget()
@@ -394,6 +397,14 @@ void Widget::set_all_btn_attribute()
     ui->add_more_btn->setIcon(pixmap6);
     ui->sort_btn->setIcon(pixmap8);
     ui->sort_2_btn->setIcon(pixmap9);
+
+
+    ui->newKynote->setToolTip(tr("Create New Note"));
+    ui->add_more_btn->setToolTip(tr("Delete Selected Note"));
+    ui->sort_btn->setToolTip(tr("Sort"));
+    ui->sort_2_btn->setToolTip(tr("Switching Themes"));
+    ui->pushButton_Exit->setToolTip(tr("Exit"));
+     ui->pushButton_Mini->setToolTip(tr("Mini"));
 }
 
 void Widget::set_table_list_page_attribute()
@@ -993,6 +1004,7 @@ void Widget::lineeditChangedSlot(const QString &text)
 
 void Widget::onSearchEditTextChanged(const QString& keyword)
 {
+    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     m_searchQueue.enqueue(keyword);
 
     if(!m_isOperationRunning){
@@ -1025,7 +1037,6 @@ void Widget::onSearchEditTextChanged(const QString& keyword)
 
             saveNoteToDB(m_currentSelectedNoteProxy);
         }
-
         // disable animation while searching
         m_noteView->setAnimationEnabled(false);
 
@@ -1035,8 +1046,8 @@ void Widget::onSearchEditTextChanged(const QString& keyword)
             if(str.isEmpty()){
                 m_noteView->setFocusPolicy(Qt::StrongFocus);
                 clearSearch();
-                QModelIndex indexInProxy = m_proxyModel->mapFromSource(m_selectedNoteBeforeSearchingInSource);
-                selectNote(indexInProxy);
+                //QModelIndex indexInProxy = m_proxyModel->mapFromSource(m_selectedNoteBeforeSearchingInSource);
+                //selectNote(indexInProxy);
                 m_selectedNoteBeforeSearchingInSource = QModelIndex();
             }else{
                 m_noteView->setFocusPolicy(Qt::NoFocus);
@@ -1099,11 +1110,13 @@ void Widget::on_sort_2_btn_clicked()
 
         light_show();
         dack_wight_flag = 0;
+        sink = 1;
     }else{
 
 
         black_show();
         dack_wight_flag = 1;
+        sink = 0;
     }
 }
 
@@ -1161,9 +1174,12 @@ void Widget::light_show()
 
 void Widget::on_SearchLine_textChanged(const QString &arg1)
 {
+    qDebug()<<"ssssssss";
     if(ui->SearchLine->text().isEmpty()){
+        qDebug()<<"111111111";
         ui->SearchLine->addAction(searchAction,QLineEdit::LeadingPosition);  //图片在左侧
         ui->SearchLine->removeAction(delAction);
+         qDebug()<<"1111111111-----";
     }
     else{
         ui->SearchLine->removeAction(searchAction);
