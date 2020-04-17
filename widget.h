@@ -183,7 +183,7 @@ private:
 private slots:
     void InitData();
     void loadNotes(QList<NoteData *> noteList, int noteCounter);
-    void onTextEditTextChanged(const QModelIndex &index);
+    void onTextEditTextChanged(const QModelIndex &index, int i);
     void onColorChanged(const QColor &color);
     void onTrashButtonClicked();
     void onNotePressed(const QModelIndex &index);
