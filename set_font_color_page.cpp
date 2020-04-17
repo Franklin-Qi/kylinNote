@@ -56,7 +56,7 @@ void Set_font_color_page::set_color()
 
 void Set_font_color_page::set_listwidget()
 {
-    for(int i=22; i<33 ; i++ )
+    for(int i=22; i<32 ; i++ )
     {
         int n = i-22;
         list_aItem[n] = new QListWidgetItem;
