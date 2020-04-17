@@ -79,7 +79,6 @@ public:
     std::vector<Edit_page*> m_editors;
 
     int dack_wight_flag;
-    QTranslator *translator;                        //国际化
     void error_throw();                             //异常处理抛出
 
 private:

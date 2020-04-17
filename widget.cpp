@@ -43,13 +43,6 @@ Widget::Widget(QWidget *parent) :
   , m_isContentModified(false)
   , m_isColorModified(false)
 {    
-    translator = new QTranslator;
-    QLocale locale;
-    //获取系统语言环境
-    if ( locale.language() == QLocale::Chinese ) {
-        translator->load(QString(":/new/translation/ukui_notebook_zh_CN.qm"));  //选择翻译文件
-        QApplication::installTranslator(translator);
-    }
     ui->setupUi(this);
     setupDatabases();
     setupModelView();
@@ -1196,7 +1189,7 @@ void Widget::black_show()
 void Widget::light_show()
 {
     this->setObjectName(QString::fromUtf8("便签本"));
-    ui->widget->setStyleSheet("QWidget{background-color: rgba(255, 255, 255, 0.7);}");
+    ui->widget->setStyleSheet("QWidget{background-color: rgba(255, 255, 255, 0.9);}");
     ui->widget_3->setStyleSheet("QWidget{background-color: rgba();}");
     ui->newKynote->setStyleSheet(QString::fromUtf8("background:rgba(61,107,229,1);color: rgb(255, 255, 255);\n"
                                                    "color: rgb(255, 255, 255);"));
