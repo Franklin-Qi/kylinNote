@@ -26,7 +26,6 @@ int sink = 0;
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
-  //, m_notebook(new Edit_page(this))
   , m_autoSaveTimer(new QTimer(this))
   , m_settingsDatabase(Q_NULLPTR)
   , m_ukui_SearchLine(Q_NULLPTR)
@@ -42,8 +41,8 @@ Widget::Widget(QWidget *parent) :
   , m_dbThread(Q_NULLPTR)
   , m_isContentModified(false)
   , m_isColorModified(false)
-  , m_isOperationRunning(false)
   , m_isTemp(false)
+  , m_isOperationRunning(false)
 {    
     ui->setupUi(this);
     setupDatabases();
@@ -255,7 +254,7 @@ void Widget::ukui_init()
 
 void Widget::ukui_conn()
 {
-    qDebug() << "conn";
+    qDebug() << "init connect slot";
     //主界面退出按钮
     connect(ui->pushButton_Exit,SIGNAL(clicked()),this,SLOT(exitSlot()));
     //主界面最小化按钮
@@ -274,7 +273,7 @@ void Widget::ukui_conn()
     connect(m_noteView,&NoteView::doubleClicked,this,&Widget::listDoubleClickSlot);
     // noteView viewport pressed
     connect(m_noteView, &NoteView::viewportPressed, this, [this](){
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+        qDebug() << "receive signal viewportPressed";
         if(m_isTemp && m_proxyModel->rowCount() > 1){
             QModelIndex indexInProxy = m_proxyModel->index(1, 0);
             selectNote(indexInProxy);
