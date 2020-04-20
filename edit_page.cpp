@@ -70,6 +70,7 @@ Edit_page::Edit_page(Widget* page, const QModelIndex &index, QWidget *parent) :
 
     connect(ui->textEdit,&QTextEdit::textChanged,this,&Edit_page::textChangedSlot);
     connect(pNotebook->ui->sort_2_btn,SIGNAL(clicked()),this,SLOT(color_clicked()));
+    color_clicked();
 }
 
 Edit_page::~Edit_page()

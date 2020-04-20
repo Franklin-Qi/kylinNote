@@ -26,6 +26,7 @@ int sink = 0;
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
+  //, tuichu(new tanchuang(this))
   , m_autoSaveTimer(new QTimer(this))
   , m_settingsDatabase(Q_NULLPTR)
   , m_ukui_SearchLine(Q_NULLPTR)
@@ -58,8 +59,8 @@ Widget::Widget(QWidget *parent) :
     ui->change_page_btn->hide();
     ui->add_more_btn->move(575, 0);
     ui->frame->hide();
-
-    //ui->widget->setStyleSheet("QWidget{background-color: rgba(0, 0, 0, 0.2);}");
+    //退出框
+    tuichu = new tanchuang(this);
 }
 
 Widget::~Widget()
@@ -243,6 +244,7 @@ void Widget::ukui_init()
     setWindowFlags(Qt::FramelessWindowHint);
     //搜索框
     ui->SearchLine->setPlaceholderText(tr("Search"));//设置详细输入框的提示信息
+
 
     set_table_list_page_attribute();
     set_all_btn_attribute();
@@ -575,21 +577,18 @@ void Widget::selectNote(const QModelIndex &noteIndex)
 void Widget::showNoteInEditor(const QModelIndex &noteIndex)
 {
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-    //m_textEdit->blockSignals(true);
-
-    /// fixing bug #202
-    //m_textEdit->setTextBackgroundColor(QColor(255,255,255, 0));
-
 
     QString content = noteIndex.data(NoteModel::NoteContent).toString();
     QDateTime dateTime = noteIndex.data(NoteModel::NoteLastModificationDateTime).toDateTime();
     int scrollbarPos = noteIndex.data(NoteModel::NoteScrollbarPos).toInt();
     int noteColor = noteIndex.data(NoteModel::NoteColor).toInt();
+    QString mdContent = noteIndex.data(NoteModel::NoteMdContent).toString();
 
+    qDebug() << mdContent << "!!!!!!!!" << content;
     const NoteWidgetDelegate delegate;
     QColor m_color = delegate.intToQcolor(noteColor);
     // set text and date
-    m_notebook->ui->textEdit->setText(content);
+    m_notebook->ui->textEdit->setText(mdContent);
     m_notebook->caitou->color_widget = QColor(m_color);
     m_notebook->update();
 
@@ -729,11 +728,7 @@ void Widget::onTextEditTextChanged(const QModelIndex &index,int i)
     qDebug() << "receive signal textchange";
     qDebug() << index;
     if(index.isValid()){
-        //m_notebook->ui->textEdit->blockSignals(true);
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         QString content = index.data(NoteModel::NoteContent).toString();
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-
 
         if(m_editors[i]->ui->textEdit->toPlainText() != content){
 
@@ -760,27 +755,23 @@ void Widget::onTextEditTextChanged(const QModelIndex &index,int i)
 
             // update model
             QMap<int, QVariant> dataValue;
-            dataValue[NoteModel::NoteContent] = QVariant::fromValue(m_editors[i]->ui->textEdit->toHtml().toUtf8());
+            dataValue[NoteModel::NoteContent] = QVariant::fromValue(m_editors[i]->ui->textEdit->toPlainText());
+            dataValue[NoteModel::NoteMdContent] = QVariant::fromValue(m_editors[i]->ui->textEdit->toHtml().toUtf8());
             dataValue[NoteModel::NoteFullTitle] = QVariant::fromValue(firstline);
             dataValue[NoteModel::NoteLastModificationDateTime] = QVariant::fromValue(dateTime);
 
-            qDebug()<<"now change text is"<< firstline;
-            QModelIndex index2 = m_proxyModel->mapToSource(index);
+            qDebug()<<"now change text is"<< firstline << m_editors[i]->ui->textEdit->toHtml().toUtf8();
+            //QModelIndex index2 = m_proxyModel->mapToSource(index);
             m_noteModel->setItemData(index, dataValue);
 
             m_isContentModified = true;
             //m_autoSaveTimer->start(500);
             saveNoteToDB(index);
         }
-        //m_notebook->ui->textEdit->blockSignals(false);
-
-        //获取当前调色板颜色
-
-        //当前调色
 
         m_isTemp = false;
     }else{
-        qDebug() << "Widget::onTextEditTextChanged() : m_currentSelectedNoteProxy is not valid";
+        qDebug() << "Widget::onTextEditTextChanged() : index is not valid";
     }
 }
 
@@ -802,9 +793,11 @@ void Widget::onColorChanged(const QColor &color)
     }
 }
 
-void Widget::exitSlot(){
-    tuichu = new tanchuang(this);
+void Widget::exitSlot()
+{
+    tuichu->setWindowFlags(tuichu->windowFlags() | Qt::WindowStaysOnTopHint);
     tuichu->show();
+    //tuichu->raise();
     if(tuichu->close_flage)
     {
        this->close();
@@ -825,7 +818,7 @@ void Widget::saveNoteToDB(const QModelIndex& noteIndex)
 {   //如果实例变量 noteIndex 是个有效对象 &&
     if(noteIndex.isValid() && m_isContentModified){
         //从排序过滤器模型返回与给定 noteIndex 对应的源模型索引。
-        QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
+        //QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
         NoteData* note = m_noteModel->getNote(noteIndex);
         if(note != Q_NULLPTR)
             emit requestCreateUpdateNote(note);
@@ -834,7 +827,7 @@ void Widget::saveNoteToDB(const QModelIndex& noteIndex)
     }else if(noteIndex.isValid() && m_isColorModified)
     {
         //从排序过滤器模型返回与给定 noteIndex 对应的源模型索引。
-        QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
+        //QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
         NoteData* note = m_noteModel->getNote(noteIndex);
         if(note != Q_NULLPTR)
             emit requestCreateUpdateNote(note);
