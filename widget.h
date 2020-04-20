@@ -114,7 +114,7 @@ private:
 
     int listflag;                                  //平铺/展开列表切换
     int sortflag;                                  //升降序切换
-    tanchuang* tuichu;
+    tanchuang* tuichu=nullptr;
 
     QAction *searchAction;
     QAction *delAction;

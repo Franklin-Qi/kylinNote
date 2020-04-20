@@ -51,7 +51,7 @@ Widget::Widget(QWidget *parent) :
     ukui_init();
     ukui_conn();
     QTimer::singleShot(200,this, SLOT(InitData()));
-     setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_TranslucentBackground);
     black_show();
     sourch_Icon();
     dack_wight_flag = -1;
@@ -59,8 +59,6 @@ Widget::Widget(QWidget *parent) :
     ui->change_page_btn->hide();
     ui->add_more_btn->move(575, 0);
     ui->frame->hide();
-    //退出框
-    tuichu = new tanchuang(this);
 }
 
 Widget::~Widget()
@@ -74,6 +72,7 @@ Widget::~Widget()
     m_dbThread->quit();
     m_dbThread->wait();
     delete m_dbThread;
+    delete tuichu;
 }
 
 // 初始化数据库中的数据并选中第一个便签（如果有）
@@ -795,6 +794,11 @@ void Widget::onColorChanged(const QColor &color)
 
 void Widget::exitSlot()
 {
+    //退出框
+    if(!tuichu)
+    {
+        tuichu = new tanchuang(this);
+    }
     tuichu->setWindowFlags(tuichu->windowFlags() | Qt::WindowStaysOnTopHint);
     tuichu->show();
     //tuichu->raise();
@@ -802,6 +806,7 @@ void Widget::exitSlot()
     {
        this->close();
     }
+
 }
 
 void Widget::miniSlot()
