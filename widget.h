@@ -83,9 +83,6 @@ public:
 
 private:
     Edit_page *m_notebook;                   //新建便签指针
-    void set_table_list_page_attribute();
-    void set_tablewidget();
-    void set_listwidget();
     void black_show();
     void light_show();
 
