@@ -128,7 +128,6 @@ private:
     NoteModel* m_deletedNotesModel;
     QSortFilterProxyModel* m_proxyModel;            //对项目进行排序，过滤
     QModelIndex m_currentSelectedNoteProxy;
-    QModelIndex m_selectedNoteBeforeSearchingInSource;
     QQueue<QString> m_searchQueue;
     DBManager* m_dbManager;
     QThread* m_dbThread;
