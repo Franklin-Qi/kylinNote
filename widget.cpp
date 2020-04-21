@@ -22,6 +22,7 @@
 
 #define FIRST_LINE_MAX 80
 int sink = 0;
+int single = 0;
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -193,6 +194,8 @@ void Widget::kyNoteInit()
     m_countLabel = ui->label;
     m_sortLabel = ui->sort_btn;
 
+    //禁用双击编辑
+    ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //隐藏滑动条
     ui->listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -981,8 +984,10 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
     m_notebook->ui->textEdit->setFocus();
     //移动光标至行末
     m_notebook->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-
-    m_notebook->show();
+    if(!single){
+        m_notebook->show();
+        single = 1;
+    }
 
     connect(m_editors[m_editors.size() - 1] ,SIGNAL(texthasChanged(QModelIndex,int)), this,SLOT(onTextEditTextChanged(QModelIndex, int)));
     connect(m_notebook ,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
@@ -1042,17 +1047,18 @@ void Widget::sortSlot()
         //参见 NoteModel::sort
     if(m_proxyModel->rowCount())
     {
-        if(sortflag)
-        {
-            m_noteModel->sort(0,Qt::DescendingOrder);
-            sortflag = 0;
+        if(!single){
+            if(sortflag)
+            {
+                m_noteModel->sort(0,Qt::DescendingOrder);
+                sortflag = 0;
 
-        }else
-        {
-            m_noteModel->sort(0,Qt::AscendingOrder);
-            sortflag = 1;
+            }else
+            {
+                m_noteModel->sort(0,Qt::AscendingOrder);
+                sortflag = 1;
+            }
         }
-
     }
 }
 
