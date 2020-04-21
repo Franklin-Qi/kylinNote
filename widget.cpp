@@ -328,7 +328,7 @@ void Widget::migrateNote(QString notePath)
         // sync db index with biggest notes id
         m_noteCounter = m_noteCounter < id ? id : m_noteCounter;
 
-        NoteData* newNote = new NoteData();
+        NoteData* newNote = new NoteData(this);
         newNote->setId(id);
 
         QString createdDateDB = notesIni.value(noteName + QStringLiteral("/dateCreated"), "Error").toString();
@@ -531,13 +531,11 @@ void Widget::createNewNote()
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     qDebug() << m_isOperationRunning;
     if(!m_isOperationRunning){
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         m_isOperationRunning = true;
 
         m_noteView->scrollToTop();
 
         if(!m_isTemp){
-            qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
             ++m_noteCounter;
             NoteData* tmpNote = generateNote(m_noteCounter);
             m_isTemp = true;
