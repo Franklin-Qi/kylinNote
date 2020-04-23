@@ -54,10 +54,12 @@ void tanchuang::on_pushButton_clicked()
 
 void tanchuang::on_pushButton_2_clicked()
 {
+    //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     this->close();
     pNotebook->close();
     if(ui->checkBox->isChecked()==true)
     {
+        emit requestSetNoteNull();
         for (auto it = pNotebook->m_editors.begin(); it!= pNotebook->m_editors.end();it++) {
             (*it)->close();
         }

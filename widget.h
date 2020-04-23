@@ -76,14 +76,14 @@ public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
 
-    Ui::Widget *ui;                                 //主ui
+    Ui::Widget *ui;                                                 //主ui
     std::vector<Edit_page*> m_editors;
 
     int dack_wight_flag;
-    void error_throw();                             //异常处理抛出
+    void error_throw();                                             //异常处理抛出
 
 private:
-    Edit_page *m_notebook;                   //新建便签指针
+    Edit_page *m_notebook;                                          //新建便签指针
     void black_show();
     void light_show();
 
@@ -110,8 +110,8 @@ private:
 
 
 
-    int listflag;                                  //平铺/展开列表切换
-    int sortflag;                                  //升降序切换
+    int listflag;                                                   //平铺/展开列表切换
+    int sortflag;                                                   //升降序切换
     tanchuang* tuichu=nullptr;
 
     QAction *searchAction;
@@ -119,41 +119,42 @@ private:
 
     QTimer* m_autoSaveTimer;
     QSettings* m_settingsDatabase;
-    QLineEdit* m_ukui_SearchLine;                   //搜索栏
-    QPushButton* m_newKynote;                       //新建按钮
-    QPushButton* m_trashButton;                     //删除按钮
-    QLabel* m_countLabel;                           //item记数
-    QPushButton* m_sortLabel;                       //升/降序按钮
+    QLineEdit* m_ukui_SearchLine;                                   //搜索栏
+    QPushButton* m_newKynote;                                       //新建按钮
+    QPushButton* m_trashButton;                                     //删除按钮
+    QLabel* m_countLabel;                                           //item记数
+    QPushButton* m_sortLabel;                                       //升/降序按钮
     NoteView* m_noteView;
-    NoteModel* m_noteModel;                         //
+    NoteModel* m_noteModel;
     NoteModel* m_deletedNotesModel;
-    QSortFilterProxyModel* m_proxyModel;            //对项目进行排序，过滤
+    QSortFilterProxyModel* m_proxyModel;                            //对项目进行排序，过滤
     QModelIndex m_currentSelectedNoteProxy;
+    QModelIndex m_tmpIndex;
     QQueue<QString> m_searchQueue;
     DBManager* m_dbManager;
     QThread* m_dbThread;
 
     int m_noteCounter;
     int m_trashCounter;
-    bool m_isContentModified;                       //便签内容是否修改
-    bool m_isColorModified;                         //便签颜色是否修改
+    bool m_isContentModified;                                       //便签内容是否修改
+    bool m_isColorModified;                                         //便签颜色是否修改
     bool m_isTemp;
     bool m_isOperationRunning;
 
 
 
-    void kyNoteInit();                               //加载界面组件
-    void kyNoteConn();                               //绑定槽函数
-    void sqlInit();                                 //加载数据库
-    void sqlAddItem();                              //插入数据库，同步插入item
-    void sqlUpdateItem();                           //同步数据库，同步更新item
+    void kyNoteInit();                                              //加载界面组件
+    void kyNoteConn();                                              //绑定槽函数
+    void sqlInit();                                                 //加载数据库
+    void sqlAddItem();                                              //插入数据库，同步插入item
+    void sqlUpdateItem();                                           //同步数据库，同步更新item
 
 
 
-    void createNewNote();                           //新建笔记
+    void createNewNote();                                           //新建笔记
     void deleteNote(const QModelIndex& noteIndex, bool isFromUser=true);
     void deleteSelectedNote();
-    void setupDatabases();                          //配置数据库
+    void setupDatabases();                                          //配置数据库
     void initializeSettingsDatabase();
     void createNewNoteIfEmpty();
     void setupModelView();
@@ -184,14 +185,15 @@ private slots:
     void newSlot();                                                 //新建按钮槽函数
     void listClickSlot(const QModelIndex &index);                   //item单击事件槽函数
     void listDoubleClickSlot(const QModelIndex &);                  //item双击事件槽函数
-    void onTextEditTextChanged(const QModelIndex &index, int i);    //文本改变槽函数
+    void onTextEditTextChanged(int noteId, int i);                  //文本改变槽函数
     void onColorChanged(const QColor &color);                       //便签颜色改变槽函数
     void onTrashButtonClicked();                                    //删除槽函数
     void onSearchEditTextChanged(const QString& keyword);           //搜索栏文本改变槽函数
     void sortSlot();                                                //升/降序槽函数
-    void on_sort_2_btn_clicked();                                   //主题切换
+    void on_sort_2_btn_clicked();                                   //主题切换槽函数
     void delAction_del_SearchLine();
     void on_SearchLine_textChanged(const QString &arg1);
+    void setNoteNullSlot();                                         //便签页关闭置空槽函数
 
 signals:
     void requestNotesList();

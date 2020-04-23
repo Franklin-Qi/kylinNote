@@ -50,7 +50,8 @@ private:
 
     Widget* pNotebook;
 
-
+signals:
+    void requestSetNoteNull();
 };
 
 #endif // TANCHUANG_H

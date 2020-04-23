@@ -34,13 +34,13 @@
 
 static int count =0;
 
-Edit_page::Edit_page(Widget* page, const QModelIndex &index, QWidget *parent) :
+Edit_page::Edit_page(Widget* page, int noteId, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Edit_page),
     m_editColor(0,0,0),
-    m_index(index)
+    m_noteId(noteId)
 {
-     qDebug()<<"aa"<<++count;
+    qDebug()<<"aa"<<++count;
     ui->setupUi(this);
     //标题
     this->setWindowTitle(tr("ukui-memo"));
@@ -118,7 +118,7 @@ void Edit_page::set_text_editing_page()
 void Edit_page::textChangedSlot()
 {
     qDebug() << "emit textchange";
-    emit texthasChanged(m_index, this->id);
+    emit texthasChanged(m_noteId, this->id);
 }
 
 //chu ti
@@ -163,8 +163,6 @@ void Edit_page::showStrikeOutResolved()
     ui->textEdit->mergeCurrentCharFormat(fmt);
 }
 
-
-
 //fu hao  suo jin
 void Edit_page::showList(bool index)
 {
@@ -195,7 +193,6 @@ void Edit_page::showList(bool index)
 
     cursor.endEditBlock();
 }
-
 
 //shu zhi  suo jin
 void Edit_page::showNUMList(bool index)
@@ -228,7 +225,7 @@ void Edit_page::showNUMList(bool index)
     cursor.endEditBlock();
 }
 
-// zhi ti dax iao
+// zi ti da xiao
 void Edit_page::showSizeSpinBix()
 {
     qDebug()<<"--------------";
@@ -243,7 +240,6 @@ void Edit_page::showSizeSpinBix()
 
 void Edit_page::set_color()
 {
-
     color[0]="background:rgba(76,119,231,1);";
     color[1]="background:rgba(250,108,99,1);";
     color[2]="background:rgba(15,161,90,1);";
@@ -301,7 +297,6 @@ void Edit_page::pink_btn_change()
 
 void Edit_page::dark_green_btn_change()
 {
-
      m_editColor = QColor(15,161,90);
      emit colorhasChanged(m_editColor);
      caitou->color_widget =QColor(15,161,90); ;
@@ -433,7 +428,6 @@ void Edit_page::contextMenuEvent(QContextMenuEvent *event)
 void Edit_page::clear_the_page()
 {
     this->close();
-    single = 0;
 }
 
 void Edit_page::add_new_page()
