@@ -101,7 +101,7 @@ private:
 
 signals:
     void texthasChanged(int noteId, int id);
-    void colorhasChanged(const QColor &color);
+    void colorhasChanged(const QColor &color,int);
 };
 
 #endif // EDIT_PAGE_H

@@ -62,6 +62,10 @@ void tanchuang::on_pushButton_2_clicked()
         emit requestSetNoteNull();
         for (auto it = pNotebook->m_editors.begin(); it!= pNotebook->m_editors.end();it++) {
             (*it)->close();
+//            qDebug() << "before swap" << pNotebook->m_editors.size();
+//            std::vector<Edit_page*> tmp;
+//            pNotebook->m_editors.swap(tmp);
+//            qDebug() << "after swap" << pNotebook->m_editors.size();
         }
     }
 }

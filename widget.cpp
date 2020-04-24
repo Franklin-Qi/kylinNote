@@ -41,7 +41,6 @@ Widget::Widget(QWidget *parent) :
   , m_dbThread(Q_NULLPTR)
   , m_isContentModified(false)
   , m_isColorModified(false)
-  , m_isTemp(false)
   , m_isOperationRunning(false)
 {    
     ui->setupUi(this);
@@ -98,11 +97,6 @@ void Widget::InitData()
     } else {
         emit requestNotesList();
     }
-
-    // Check if it is running with an argument (ex. hide)
-    //    if (qApp->arguments().contains(QStringLiteral("--autostart"))) {
-    //        setMainWindowVisibility(false);
-    //    }
 }
 
 void Widget::setupModelView()
@@ -244,6 +238,9 @@ void Widget::kyNoteConn()
     connect(m_newKynote,&QPushButton::clicked, this, &Widget::newSlot);
     //删除按钮
     connect(m_trashButton, &QPushButton::clicked, this, &Widget::onTrashButtonClicked);
+    // note model rows moved
+    connect(m_noteModel, &NoteModel::rowsAboutToBeMoved, m_noteView, &NoteView::rowsAboutToBeMoved);
+    connect(m_noteModel, &NoteModel::rowsMoved, m_noteView, &NoteView::rowsMoved);
     //升/降序按钮
     connect(m_sortLabel,&QPushButton::clicked,this,&Widget::sortSlot);
     //搜索栏文本输入
@@ -254,17 +251,7 @@ void Widget::kyNoteConn()
     connect(m_noteView, &NoteView::pressed, this, &Widget::listClickSlot);
     //listview双击事件
     connect(m_noteView,&NoteView::doubleClicked,this,&Widget::listDoubleClickSlot);
-    // noteView viewport pressed
-    connect(m_noteView, &NoteView::viewportPressed, this, [this](){
-        qDebug() << "receive signal viewportPressed";
-        if(m_isTemp && m_proxyModel->rowCount() > 1){
-            QModelIndex indexInProxy = m_proxyModel->index(1, 0);
-            selectNote(indexInProxy);
-        }else if(m_isTemp && m_proxyModel->rowCount() == 1){
-            QModelIndex indexInProxy = m_proxyModel->index(0, 0);
-            deleteNote(indexInProxy, false);
-        }
-    });
+
     //connect(ui->ukui_SearchLine,&QLineEdit::textChanged,this,&Widget::lineeditChangedSlot);
     //    connect(ui->searchClearButton,&QPushButton::clicked,this,[=]{
     //        ui->ukui_SearchLine->setText("");
@@ -406,16 +393,11 @@ void Widget::deleteNote(const QModelIndex &noteIndex, bool isFromUser)
         // delete from model
         QModelIndex indexToBeRemoved = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
         NoteData* noteTobeRemoved = m_noteModel->removeNote(indexToBeRemoved);
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-        if(m_isTemp){
-            qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-            m_isTemp = false;
-        }else{
-            noteTobeRemoved->setDeletionDateTime(QDateTime::currentDateTime());
-            qDebug() << "emit requestDeleteNote";
-            //delete from sql
-            emit requestDeleteNote(noteTobeRemoved);
-        }
+
+        noteTobeRemoved->setDeletionDateTime(QDateTime::currentDateTime());
+        qDebug() << "emit requestDeleteNote";
+        //delete from sql
+        emit requestDeleteNote(noteTobeRemoved);
 
         if(isFromUser){
             if(m_noteModel->rowCount() > 0){
@@ -438,12 +420,29 @@ void Widget::deleteSelectedNote()
 {
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     if(!m_isOperationRunning){
+        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         m_isOperationRunning = true;
         if(m_currentSelectedNoteProxy.isValid()){
             qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+            int noteId = m_currentSelectedNoteProxy.data(NoteModel::NoteID).toInt();
+            qDebug() << noteId << m_currentSelectedNoteProxy;
+
+            for(auto it = m_editors.begin(); it!=m_editors.end();it++)
+            {
+                if ((*it)->m_noteId == noteId) {
+                    m_notebook = *it;
+                    m_notebook->close();
+                    delete m_notebook;
+                    m_editors.erase(it);
+                    break;
+                }
+            }
+            qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
             qDebug() << m_currentSelectedNoteProxy;
-            --m_noteCounter;
+            //--m_noteCounter;
             deleteNote(m_currentSelectedNoteProxy, true);
+            int row = m_currentSelectedNoteProxy.row();
+            m_noteView->animateRemovedRow(QModelIndex(),row, row);
         }
         m_isOperationRunning = false;
     }
@@ -459,11 +458,6 @@ void Widget::selectNote(const QModelIndex &noteIndex)
         QModelIndex indexSrc = m_proxyModel->mapToSource(noteIndex);
         showNoteInEditor(indexSrc);
 
-        //        if(m_isTemp && noteIndex.row() != (m_proxyModel->rowCount() - 1)){
-        //            // delete the unmodified new note
-        //            // deleteNote(m_currentSelectedNoteProxy, false);
-        //            // m_currentSelectedNoteProxy = m_proxyModel->index(noteIndex.row()-1, 0);
-        //        }
         m_currentSelectedNoteProxy = noteIndex;
 
         m_noteView->selectionModel()->select(m_currentSelectedNoteProxy, QItemSelectionModel::ClearAndSelect);
@@ -484,7 +478,7 @@ void Widget::showNoteInEditor(const QModelIndex &noteIndex)
     int noteColor = noteIndex.data(NoteModel::NoteColor).toInt();
     QString mdContent = noteIndex.data(NoteModel::NoteMdContent).toString();
 
-    //qDebug() << mdContent << "!!!!!!!!" << content;
+    qDebug() << mdContent << "!!!!!!!!" << content;
     const NoteWidgetDelegate delegate;
     QColor m_color = delegate.intToQcolor(noteColor);
     // set text and date
@@ -524,32 +518,29 @@ void Widget::createNewNoteIfEmpty()
 void Widget::createNewNote()
 {
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-    qDebug() << m_isOperationRunning;
     if(!m_isOperationRunning){
         m_isOperationRunning = true;
 
         m_noteView->scrollToTop();
 
-        if(!m_isTemp){
-            ++m_noteCounter;
-            NoteData* tmpNote = generateNote(m_noteCounter);
-            m_isTemp = true;
+        ++m_noteCounter;
+        NoteData* tmpNote = generateNote(m_noteCounter);
 
-            // insert the new note to NoteModel
-            QModelIndex indexSrc = m_noteModel->insertNote(tmpNote, 0);
+        // insert the new note to NoteModel
+        QModelIndex indexSrc = m_noteModel->insertNote(tmpNote, 0);
 
-            // update the editor header date label
-            QString dateTimeFromDB = tmpNote->lastModificationdateTime().toString(Qt::ISODate);
-            QString dateTimeForEditor = getNoteDateEditor(dateTimeFromDB);
+        // update the editor header date label
+        QString dateTimeFromDB = tmpNote->lastModificationdateTime().toString(Qt::ISODate);
+        QString dateTimeForEditor = getNoteDateEditor(dateTimeFromDB);
 
-            // 从排序过滤器模型返回与给定 indexSrc 对应的源模型索引。
-            m_currentSelectedNoteProxy = m_proxyModel->mapFromSource(indexSrc);
+        // 从排序过滤器模型返回与给定 indexSrc 对应的源模型索引。
+        m_currentSelectedNoteProxy = m_proxyModel->mapFromSource(indexSrc);
+        saveNoteToDB(m_currentSelectedNoteProxy);
 
-        }else{
-            qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-            int row = m_currentSelectedNoteProxy.row();
-            m_noteView->animateAddedRow(QModelIndex(),row, row);
-        }
+        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+        int row = m_currentSelectedNoteProxy.row();
+        m_noteView->animateAddedRow(QModelIndex(),row, row);
+
         qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         //设置索引 m_currentSelectedNoteProxy 所在的页面为当前页面
         m_noteView->setCurrentIndex(m_currentSelectedNoteProxy);
@@ -577,11 +568,11 @@ void Widget::loadNotes(QList<NoteData *> noteList, int noteCounter)
 
 //将当前便笺保存到数据库
 void Widget::saveNoteToDB(const QModelIndex& noteIndex)
-{   //如果实例变量 noteIndex 是个有效对象 &&
-    if(noteIndex.isValid() && m_isContentModified){
+{
+    if(noteIndex.isValid()){
         //从排序过滤器模型返回与给定 noteIndex 对应的源模型索引。
-        //QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
-        NoteData* note = m_noteModel->getNote(noteIndex);
+        QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
+        NoteData* note = m_noteModel->getNote(indexInSrc);
         if(note != Q_NULLPTR)
             emit requestCreateUpdateNote(note);
 
@@ -589,8 +580,8 @@ void Widget::saveNoteToDB(const QModelIndex& noteIndex)
     }else if(noteIndex.isValid() && m_isColorModified)
     {
         //从排序过滤器模型返回与给定 noteIndex 对应的源模型索引。
-        //QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
-        NoteData* note = m_noteModel->getNote(noteIndex);
+        QModelIndex indexInSrc = m_proxyModel->mapToSource(noteIndex);
+        NoteData* note = m_noteModel->getNote(indexInSrc);
         if(note != Q_NULLPTR)
             emit requestCreateUpdateNote(note);
         m_isColorModified = false;
@@ -649,7 +640,7 @@ void Widget::moveNoteToTop()
 
         // 更新当前 最顶端QAbstractListModel item 并添加代理
         m_tmpIndex = m_proxyModel->mapFromSource(destinationIndex);
-
+        m_currentSelectedNoteProxy = m_tmpIndex;
         //修改当前选中
         m_noteView->setCurrentIndex(m_tmpIndex);
     }else{
@@ -701,9 +692,10 @@ void Widget::clearSearch()
     m_ukui_SearchLine->clear();
     m_ukui_SearchLine->blockSignals(false);
     m_proxyModel->setFilterFixedString(QString());
-
-    //m_clearButton->hide();
     m_ukui_SearchLine->setFocus();
+    m_ukui_SearchLine->addAction(searchAction,QLineEdit::LeadingPosition);  //图片在左侧
+    m_ukui_SearchLine->removeAction(delAction);
+
 }
 
 void Widget::black_show()
@@ -807,7 +799,6 @@ void Widget::onTextEditTextChanged(int noteId, int i)
     qDebug() << noteId;
     for(int count = 0; count <= m_proxyModel->rowCount();count ++)
     {
-        qDebug() << "####";
         m_tmpIndex = m_proxyModel->index(count,0);
         if(m_tmpIndex.data(NoteModel::NoteID).toInt() == noteId){
             qDebug() << m_tmpIndex.data(NoteModel::NoteID).toInt();
@@ -824,10 +815,12 @@ void Widget::onTextEditTextChanged(int noteId, int i)
             qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
             //move note to the top of the list
             QModelIndex sourceIndex = m_proxyModel->mapToSource(m_tmpIndex);
-            // qDebug() << sourceIndex.row();  //0
+
             qDebug() << m_currentSelectedNoteProxy;
             if(m_tmpIndex.row() != 0){
+                //m_noteView->setAnimationEnabled(false);
                 moveNoteToTop();
+                //m_noteView->setAnimationEnabled(true);
             }
             else if(!ui->SearchLine->text().isEmpty() && sourceIndex.row() != 0){
                 m_noteView->setAnimationEnabled(false);
@@ -857,28 +850,36 @@ void Widget::onTextEditTextChanged(int noteId, int i)
             qDebug() << "saveNotetodb" << m_tmpIndex;
             saveNoteToDB(m_tmpIndex);
         }
-
-        m_isTemp = false;
     }else{
         qDebug() << "Widget::onTextEditTextChanged() : index is not valid";
     }
 }
 
-void Widget::onColorChanged(const QColor &color)
+void Widget::onColorChanged(const QColor &color,int noteId)
 {
+    qDebug() << "oncolorchanged noteid111" << noteId;
+    for(int count = 0; count <= m_proxyModel->rowCount();count ++)
+    {
+        qDebug() << "####";
+        m_tmpColorIndex = m_proxyModel->index(count,0);
+        if(m_tmpColorIndex.data(NoteModel::NoteID).toInt() == noteId){
+            qDebug() << "oncolorchanged noteid222" << m_tmpColorIndex.data(NoteModel::NoteID).toInt();
+            break;
+        }
+    }
     qDebug() << "receive signal onColorChanged";
-    if(m_currentSelectedNoteProxy.isValid()){
+    if(m_tmpColorIndex.isValid()){
         const NoteWidgetDelegate delegate;
         int m_color = delegate.qcolorToInt(color);
         qDebug () << "m_color" << m_color;
         QMap<int, QVariant> dataValue;
         dataValue[NoteModel::NoteColor] = QVariant::fromValue(m_color);
 
-        QModelIndex index = m_proxyModel->mapToSource(m_currentSelectedNoteProxy);
+        QModelIndex index = m_proxyModel->mapToSource(m_tmpColorIndex);
         m_noteModel->setItemData(index, dataValue);
-        qDebug() << "m_currentSelectedNoteProxy" << m_currentSelectedNoteProxy.data(NoteModel::NoteColor).toInt();
+        qDebug() << "m_tmpColorIndex" << m_tmpColorIndex.data(NoteModel::NoteColor).toInt();
         m_isColorModified = true;
-        m_autoSaveTimer->start(500);
+        saveNoteToDB(m_tmpColorIndex);
     }
 }
 
@@ -914,20 +915,10 @@ void Widget::newSlot()
         clearSearch();
     }
 
-    // save the data of the previous selected
-    if(m_currentSelectedNoteProxy.isValid()
-            && m_isContentModified){
-        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-        qDebug() << m_currentSelectedNoteProxy;
-        saveNoteToDB(m_currentSelectedNoteProxy);
-        m_isContentModified = false;
-    }
-
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     this->createNewNote();
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     m_countLabel->setText(QObject::tr("%1 records in total").arg(m_proxyModel->rowCount()));
-
 }
 
 void Widget::onTrashButtonClicked()
@@ -947,12 +938,6 @@ void Widget::listClickSlot(const QModelIndex& index)
         QModelIndex indexInProxy = m_proxyModel->index(index.row(), 0);
         //qDebug() << indexInProxy;
         if(indexInProxy.isValid()){
-            if(m_isTemp && indexInProxy.row() != 0){
-                // delete the unmodified new note
-                //deleteNote(m_currentSelectedNoteProxy, false);
-                //m_currentSelectedNoteProxy = m_proxyModel->index(indexInProxy.row()-1, 0);
-            }
-
             m_currentSelectedNoteProxy = indexInProxy;
 
             m_noteView->selectionModel()->select(m_currentSelectedNoteProxy, QItemSelectionModel::ClearAndSelect);
@@ -1020,13 +1005,15 @@ void Widget::listClickSlot(const QModelIndex& index)
 void Widget::listDoubleClickSlot(const QModelIndex& index)
 {
     int noteId = index.data(NoteModel::NoteID).toInt();
-    qDebug() << noteId;
+    qDebug() << noteId << index;
     int isExistInMeditors = 0;
 
     for(auto it = m_editors.begin(); it!=m_editors.end();it++)
     {
         if ((*it)->m_noteId == noteId) {
+            qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
             isExistInMeditors = 1;
+            m_notebook = *it;
             break;
         }
     }
@@ -1044,14 +1031,13 @@ void Widget::listDoubleClickSlot(const QModelIndex& index)
             m_noteView->setCurrentRowActive(false);
         }
 
-        //设置鼠标焦点
-        m_notebook->ui->textEdit->setFocus();
-        //移动光标至行末
-        m_notebook->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-
         connect(m_editors[m_editors.size() - 1] ,SIGNAL(texthasChanged(int,int)), this,SLOT(onTextEditTextChanged(int, int)));
-        connect(m_notebook ,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
+        connect(m_editors[m_editors.size() - 1] ,SIGNAL(colorhasChanged(QColor,int)),this,SLOT(onColorChanged(QColor,int)));
     }
+    //设置鼠标焦点
+    m_notebook->ui->textEdit->setFocus();
+    //移动光标至行末
+    m_notebook->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
     m_notebook->show();
 }
 
@@ -1063,21 +1049,6 @@ void Widget::onSearchEditTextChanged(const QString& keyword)
     if(!m_isOperationRunning){
         qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         m_isOperationRunning = true;
-        if(m_isTemp){
-            qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-            m_isTemp = false;
-            //--m_noteCounter;
-            // prevent the line edit from emitting signal
-            // while animation for deleting the new note is running
-            //            m_ukui_SearchLine->blockSignals(true);
-            //            m_currentSelectedNoteProxy = QModelIndex();
-            //            qDebug() << m_currentSelectedNoteProxy;
-            //            QModelIndex index = m_noteModel->index(0);
-            //            qDebug() << index;
-            //            m_noteModel->removeNote(index);
-            //            m_ukui_SearchLine->blockSignals(false);
-
-        }
 
         // disable animation while searching
         m_noteView->setAnimationEnabled(false);

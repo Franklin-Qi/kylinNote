@@ -281,7 +281,7 @@ void Edit_page::showfortcolor()
 void Edit_page::blue_btn_change()
 {
     m_editColor = QColor(76,119,231);
-    emit colorhasChanged(m_editColor);
+    emit colorhasChanged(m_editColor,m_noteId);
     qDebug() << "emit colorhasChanged";
     caitou->color_widget = QColor(76,119,231);
     update();
@@ -290,7 +290,7 @@ void Edit_page::blue_btn_change()
 void Edit_page::pink_btn_change()
 {
     m_editColor = QColor(250,108,99);
-    emit colorhasChanged(m_editColor);
+    emit colorhasChanged(m_editColor,m_noteId);
     caitou->color_widget = QColor(250,108,99);
     update();
 }
@@ -298,7 +298,7 @@ void Edit_page::pink_btn_change()
 void Edit_page::dark_green_btn_change()
 {
      m_editColor = QColor(15,161,90);
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      caitou->color_widget =QColor(15,161,90); ;
      update();
 }
@@ -306,7 +306,7 @@ void Edit_page::dark_green_btn_change()
 void Edit_page::orang_btn_change()
 {
      m_editColor = QColor(255,151,47);
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      caitou->color_widget =QColor(255,151,47) ;
      update();
 }
@@ -314,7 +314,7 @@ void Edit_page::orang_btn_change()
 void Edit_page::Violet_btn_change()
 {
      m_editColor = QColor(186,123,216);
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      caitou->color_widget = QColor(186,123,216);
      update();
 }
@@ -322,7 +322,7 @@ void Edit_page::Violet_btn_change()
 void Edit_page::Golden_btn_change()
 {
      m_editColor = QColor(248,209,93);
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      caitou->color_widget = QColor(248,209,93);
      update();
 }
@@ -330,7 +330,7 @@ void Edit_page::Golden_btn_change()
 void Edit_page::light_blue_btn_change()
 {
      m_editColor = QColor(42,162,217);
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      caitou->color_widget = QColor(42,162,217);
      update();
 }
@@ -338,7 +338,7 @@ void Edit_page::light_blue_btn_change()
 void Edit_page::light_green_btn_change()
 {
      m_editColor = QColor(110,207,67);
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      caitou->color_widget = QColor(110,207,67);
      update();
 }
@@ -346,7 +346,7 @@ void Edit_page::light_green_btn_change()
 void Edit_page::yellow_btn_change()
 {
      m_editColor = QColor(250,243,175);
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      caitou->color_widget = QColor(250,243,175);
      update();
 }
@@ -361,7 +361,7 @@ void Edit_page::wight_btn_change()
         caitou->color_widget = QColor(0,0,0);
     }
 
-     emit colorhasChanged(m_editColor);
+     emit colorhasChanged(m_editColor,m_noteId);
      update();
 }
 
