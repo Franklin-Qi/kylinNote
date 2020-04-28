@@ -25,7 +25,7 @@
 #include "text_editing.h"
 #include <QPainter>
 #include <QColor>
-#include "cai_tou.h"
+#include "noteHead.h"
 #include <QModelIndex>
 
 namespace Ui {
@@ -43,7 +43,7 @@ public:
     Ui::Edit_page *ui;
     Widget* pNotebook;
     QColor m_editColor;
-    cai_tou *caitou;
+    noteHead *m_noteHead;
     QModelIndex m_index;
     int id;
     int m_noteId;

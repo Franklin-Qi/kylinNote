@@ -15,22 +15,24 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#include "edit_page.h"
-#include "ui_edit_page.h"
+
 #include <QBitmap>
 #include <QPalette>
-#include "ui_select_color_page.h"
-#include <QDebug>
-#include "widget.h"
 #include <QPainter>
-#include "ui_text_editing.h"
 #include <QTextList>
+#include <QDebug>
+
+#include "ui_text_editing.h"
 #include "set_font_size_page.h"
 #include "ui_set_font_size_page.h"
 #include "set_font_color_page.h"
 #include "ui_set_font_color_page.h"
-#include "cai_tou.h"
+#include "ui_select_color_page.h"
+#include "noteHead.h"
+#include "widget.h"
 #include "ui_widget.h"
+#include "edit_page.h"
+#include "ui_edit_page.h"
 
 static int count =0;
 
@@ -63,8 +65,8 @@ Edit_page::Edit_page(Widget* page, int noteId, QWidget *parent) :
     set_text_editing_page();
     set_color();
 
-    caitou = new  cai_tou(this);
-    caitou->move(0,0);
+    m_noteHead = new noteHead(this);
+    m_noteHead->move(0,0);
     ui->widget->hide();
     ui->textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -283,7 +285,7 @@ void Edit_page::blue_btn_change()
     m_editColor = QColor(76,119,231);
     emit colorhasChanged(m_editColor,m_noteId);
     qDebug() << "emit colorhasChanged";
-    caitou->color_widget = QColor(76,119,231);
+    m_noteHead->color_widget = QColor(76,119,231);
     update();
 }
 
@@ -291,7 +293,7 @@ void Edit_page::pink_btn_change()
 {
     m_editColor = QColor(250,108,99);
     emit colorhasChanged(m_editColor,m_noteId);
-    caitou->color_widget = QColor(250,108,99);
+    m_noteHead->color_widget = QColor(250,108,99);
     update();
 }
 
@@ -299,7 +301,7 @@ void Edit_page::dark_green_btn_change()
 {
      m_editColor = QColor(15,161,90);
      emit colorhasChanged(m_editColor,m_noteId);
-     caitou->color_widget =QColor(15,161,90); ;
+     m_noteHead->color_widget =QColor(15,161,90); ;
      update();
 }
 
@@ -307,7 +309,7 @@ void Edit_page::orang_btn_change()
 {
      m_editColor = QColor(255,151,47);
      emit colorhasChanged(m_editColor,m_noteId);
-     caitou->color_widget =QColor(255,151,47) ;
+     m_noteHead->color_widget =QColor(255,151,47) ;
      update();
 }
 
@@ -315,7 +317,7 @@ void Edit_page::Violet_btn_change()
 {
      m_editColor = QColor(186,123,216);
      emit colorhasChanged(m_editColor,m_noteId);
-     caitou->color_widget = QColor(186,123,216);
+     m_noteHead->color_widget = QColor(186,123,216);
      update();
 }
 
@@ -323,7 +325,7 @@ void Edit_page::Golden_btn_change()
 {
      m_editColor = QColor(248,209,93);
      emit colorhasChanged(m_editColor,m_noteId);
-     caitou->color_widget = QColor(248,209,93);
+     m_noteHead->color_widget = QColor(248,209,93);
      update();
 }
 
@@ -331,7 +333,7 @@ void Edit_page::light_blue_btn_change()
 {
      m_editColor = QColor(42,162,217);
      emit colorhasChanged(m_editColor,m_noteId);
-     caitou->color_widget = QColor(42,162,217);
+     m_noteHead->color_widget = QColor(42,162,217);
      update();
 }
 
@@ -339,7 +341,7 @@ void Edit_page::light_green_btn_change()
 {
      m_editColor = QColor(110,207,67);
      emit colorhasChanged(m_editColor,m_noteId);
-     caitou->color_widget = QColor(110,207,67);
+     m_noteHead->color_widget = QColor(110,207,67);
      update();
 }
 
@@ -347,7 +349,7 @@ void Edit_page::yellow_btn_change()
 {
      m_editColor = QColor(250,243,175);
      emit colorhasChanged(m_editColor,m_noteId);
-     caitou->color_widget = QColor(250,243,175);
+     m_noteHead->color_widget = QColor(250,243,175);
      update();
 }
 
@@ -355,10 +357,10 @@ void Edit_page::wight_btn_change()
 {
     if(pNotebook->dack_wight_flag){
      m_editColor = QColor(236,238,242);
-     caitou->color_widget = QColor(236,238,242);
+     m_noteHead->color_widget = QColor(236,238,242);
     }else{
         m_editColor = QColor(0,0,0);
-        caitou->color_widget = QColor(0,0,0);
+        m_noteHead->color_widget = QColor(0,0,0);
     }
 
      emit colorhasChanged(m_editColor,m_noteId);

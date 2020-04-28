@@ -15,26 +15,18 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#ifndef FORM_H
-#define FORM_H
+#include "fontButton.h"
+#include "ui_fontButton.h"
 
-#include <QWidget>
-
-namespace Ui {
-class Form;
+fontButton::fontButton(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::fontButton)
+{
+    ui->setupUi(this);
+    ui->label->setAlignment(Qt::AlignHCenter);
 }
 
-class Form : public QWidget
+fontButton::~fontButton()
 {
-    Q_OBJECT
-
-public:
-    explicit Form(QWidget *parent = nullptr);
-    ~Form();
-        Ui::Form *ui;
-
-private:
-
-};
-
-#endif // FORM_H
+    delete ui;
+}

@@ -15,26 +15,26 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#ifndef COLOR_MINI_H
-#define COLOR_MINI_H
+#ifndef PALETTEBUTTON_H
+#define PALETTEBUTTON_H
 
 #include <QWidget>
 
 namespace Ui {
-class color_mini;
+class paletteButton;
 }
 
-class color_mini : public QWidget
+class paletteButton : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit color_mini(QWidget *parent = nullptr);
-    ~color_mini();
-    Ui::color_mini *ui;
+    explicit paletteButton(QWidget *parent = nullptr);
+    ~paletteButton();
+    Ui::paletteButton *ui;
 
 private:
 
 };
 
-#endif // COLOR_MINI_H
+#endif // PALETTEBUTTON_H

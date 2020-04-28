@@ -15,43 +15,26 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#ifndef TANCHUANG_H
-#define TANCHUANG_H
+#ifndef FONTBUTTON_H
+#define FONTBUTTON_H
 
-#include <QDialog>
-#include <QPainter>
+#include <QWidget>
 
-class Widget;
 namespace Ui {
-class tanchuang;
+class fontButton;
 }
-///class Notebook;
-class tanchuang : public QDialog
+
+class fontButton : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit tanchuang(Widget* page,QWidget *parent=nullptr);
-    ~tanchuang();
-
-
-private slots:
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
-
-    void color_clicked();
+    explicit fontButton(QWidget *parent = nullptr);
+    ~fontButton();
+    Ui::fontButton *ui;
 
 private:
-    Ui::tanchuang *ui;
 
-    void light_show();
-    void black_show();
-
-    Widget* pNotebook;
-
-signals:
-    void requestSetNoteNull();
 };
 
-#endif // TANCHUANG_H
+#endif // FONTBUTTON_H

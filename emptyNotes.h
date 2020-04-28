@@ -15,17 +15,28 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#include "color_mini.h"
-#include "ui_color_mini.h"
+#ifndef EMPTYNOTES_H
+#define EMPTYNOTES_H
 
-color_mini::color_mini(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::color_mini)
-{
-    ui->setupUi(this);
+#include <QDialog>
+
+namespace Ui {
+class emptyNotes;
 }
 
-color_mini::~color_mini()
+class emptyNotes : public QDialog
 {
-    delete ui;
-}
+    Q_OBJECT
+
+public:
+    explicit emptyNotes(QWidget *parent = nullptr);
+    ~emptyNotes();
+
+private slots:
+    void on_pushButton_clicked();
+
+private:
+    Ui::emptyNotes *ui;
+};
+
+#endif // EMPTY_NOTEPAD_H

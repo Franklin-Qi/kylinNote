@@ -50,7 +50,7 @@
 #include "notemodel.h"
 #include "dbmanager.h"
 #include "edit_page.h"
-#include "tanchuang.h"
+#include "noteExitWindow.h"
 #include "ui_edit_page.h"
 
 extern int sink;
@@ -100,7 +100,7 @@ private:
 
     int listflag;                                                   //平铺/展开列表切换
     int sortflag;                                                   //升降序切换
-    tanchuang* tuichu=nullptr;                                      //退出弹窗
+    noteExitWindow* m_noteExitWindow=nullptr;                                      //退出弹窗
     QAction *searchAction;                                          //搜索栏图标
     QAction *delAction;                                             //搜索栏删除图标
     QTimer* m_autoSaveTimer;                                        //自动保存定时器

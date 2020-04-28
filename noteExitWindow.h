@@ -15,28 +15,43 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#ifndef TUI_CHU_BIAB_QIAN_DIALOG_H
-#define TUI_CHU_BIAB_QIAN_DIALOG_H
+#ifndef NOTEEXITWINDOW_H
+#define NOTEEXITWINDOW_H
 
 #include <QDialog>
+#include <QPainter>
 
+class Widget;
 namespace Ui {
-class tui_chu_biab_qian_Dialog;
+class noteExitWindow;
 }
 
-class tui_chu_biab_qian_Dialog : public QDialog
+class noteExitWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit tui_chu_biab_qian_Dialog(QWidget *parent = nullptr);
-    ~tui_chu_biab_qian_Dialog();
+    explicit noteExitWindow(Widget* page,QWidget *parent=nullptr);
+    ~noteExitWindow();
+
 
 private slots:
     void on_pushButton_clicked();
 
+    void on_pushButton_2_clicked();
+
+    void color_clicked();
+
 private:
-    Ui::tui_chu_biab_qian_Dialog *ui;
+    Ui::noteExitWindow *ui;
+
+    void light_show();
+    void black_show();
+
+    Widget* pNotebook;
+
+signals:
+    void requestSetNoteNull();
 };
 
-#endif // TUI_CHU_BIAB_QIAN_DIALOG_H
+#endif // NOTEEXITWINDOW_H

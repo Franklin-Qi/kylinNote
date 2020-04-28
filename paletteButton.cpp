@@ -15,18 +15,17 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#include "form.h"
-#include "ui_form.h"
+#include "paletteButton.h"
+#include "ui_paletteButton.h"
 
-Form::Form(QWidget *parent) :
+paletteButton::paletteButton(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Form)
+    ui(new Ui::paletteButton)
 {
     ui->setupUi(this);
-    ui->label->setAlignment(Qt::AlignHCenter);
 }
 
-Form::~Form()
+paletteButton::~paletteButton()
 {
     delete ui;
 }

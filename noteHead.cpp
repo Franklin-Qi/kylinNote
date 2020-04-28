@@ -15,18 +15,18 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#include "cai_tou.h"
-#include "ui_cai_tou.h"
+#include "noteHead.h"
+#include "ui_noteHead.h"
 
-cai_tou::cai_tou(QWidget *parent) :
+noteHead::noteHead(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::cai_tou)
+    ui(new Ui::noteHead)
 {
     ui->setupUi(this);
     this->resize(250,8);
 }
 
-cai_tou::~cai_tou()
+noteHead::~noteHead()
 {
     delete ui;
 }

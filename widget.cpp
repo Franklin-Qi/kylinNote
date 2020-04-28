@@ -219,12 +219,12 @@ void Widget::kyNoteInit()
 
     ui->tableView->hide();
     ui->set_btn->hide();
-    ui->change_page_btn->hide();
+    //ui->change_page_btn->hide();
     ui->add_more_btn->move(575, 0);
     ui->frame->hide();
     setAttribute(Qt::WA_TranslucentBackground);
     //退出框
-    tuichu = new tanchuang(this);
+    m_noteExitWindow = new noteExitWindow(this);
 }
 
 void Widget::kyNoteConn()
@@ -246,7 +246,7 @@ void Widget::kyNoteConn()
     //搜索栏文本输入
     connect(m_ukui_SearchLine, &QLineEdit::textChanged, this, &Widget::onSearchEditTextChanged);
     //退出弹窗
-    connect(tuichu,&tanchuang::requestSetNoteNull,this,&Widget::setNoteNullSlot);
+    connect(m_noteExitWindow,&noteExitWindow::requestSetNoteNull,this,&Widget::setNoteNullSlot);
     //listview单击事件
     connect(m_noteView, &NoteView::pressed, this, &Widget::listClickSlot);
     //listview双击事件
@@ -483,7 +483,7 @@ void Widget::showNoteInEditor(const QModelIndex &noteIndex)
     QColor m_color = delegate.intToQcolor(noteColor);
     // set text and date
     m_notebook->ui->textEdit->setText(content);
-    m_notebook->caitou->color_widget = QColor(m_color);
+    m_notebook->m_noteHead->color_widget = QColor(m_color);
     m_notebook->update();
 
     QString noteDate = dateTime.toString(Qt::ISODate);
@@ -885,9 +885,9 @@ void Widget::onColorChanged(const QColor &color,int noteId)
 
 void Widget::exitSlot()
 {
-    tuichu->setWindowFlags(tuichu->windowFlags() | Qt::WindowStaysOnTopHint);
-    tuichu->show();
-    tuichu->raise();
+    m_noteExitWindow->setWindowFlags(m_noteExitWindow->windowFlags() | Qt::WindowStaysOnTopHint);
+    m_noteExitWindow->show();
+    m_noteExitWindow->raise();
 }
 
 void Widget::miniSlot()

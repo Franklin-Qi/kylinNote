@@ -15,15 +15,17 @@
 * along with this program; if not, see <http://www.gnu.org/licenses/&gt;.
 *
 */
-#include "tanchuang.h"
-#include "ui_tanchuang.h"
 #include <QBitmap>
 #include <QPainter>
+
+#include "noteExitWindow.h"
+#include "ui_noteExitWindow.h"
 #include "widget.h"
 #include "ui_widget.h"
-tanchuang::tanchuang(Widget* page, QWidget *parent) :
+
+noteExitWindow::noteExitWindow(Widget* page, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::tanchuang)
+    ui(new Ui::noteExitWindow)
 {
     ui->setupUi(this);
     pNotebook = page;
@@ -42,17 +44,17 @@ tanchuang::tanchuang(Widget* page, QWidget *parent) :
     color_clicked();
 }
 
-tanchuang::~tanchuang()
+noteExitWindow::~noteExitWindow()
 {
     delete ui;
 }
 
-void tanchuang::on_pushButton_clicked()
+void noteExitWindow::on_pushButton_clicked()
 {
     this->close();
 }
 
-void tanchuang::on_pushButton_2_clicked()
+void noteExitWindow::on_pushButton_2_clicked()
 {
     //qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     this->close();
@@ -70,7 +72,7 @@ void tanchuang::on_pushButton_2_clicked()
     }
 }
 
-void tanchuang::color_clicked()
+void noteExitWindow::color_clicked()
 {
     if(!pNotebook->dack_wight_flag)
     {
@@ -81,7 +83,7 @@ void tanchuang::color_clicked()
     }
 }
 
-void tanchuang::light_show()
+void noteExitWindow::light_show()
 {
     ui->widget->setStyleSheet("QWidget{background-color: rgba(255, 255, 255, 0.4);}");
 
@@ -104,7 +106,7 @@ void tanchuang::light_show()
                                                  "line-height:24px;"));
 }
 
-void tanchuang::black_show()
+void noteExitWindow::black_show()
 {
     ui->widget->setStyleSheet("QWidget{background-color: rgba(0, 0, 0, 0.4);}");
 

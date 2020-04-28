@@ -21,8 +21,8 @@
 #include <QWidget>
 #include <QListWidgetItem>
 #include <QLabel>
-#include "form.h"
-#include "ui_form.h"
+#include "fontButton.h"
+#include "ui_fontButton.h"
 
 namespace Ui {
 class Set_font_size_page;
@@ -41,7 +41,7 @@ public:
 
     QListWidgetItem *list_aItem[13];
     //QWidget *list_page[13];
-    Form *list_page[13];
+    fontButton *list_page[13];
     QLabel *label[13];
 
 private:
