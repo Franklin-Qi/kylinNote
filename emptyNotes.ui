@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>tui_chu_biab_qian_Dialog</class>
- <widget class="QDialog" name="tui_chu_biab_qian_Dialog">
+ <class>emptyNotes</class>
+ <widget class="QDialog" name="emptyNotes">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -36,6 +36,7 @@ SOURCES += \
     mythrow.cpp \
     noteExitWindow.cpp \
     noteHead.cpp \
+    noteTable.cpp \
     notedata.cpp \
     notemodel.cpp \
     noteview.cpp \
@@ -56,6 +57,7 @@ HEADERS += \
     mythrow.h \
     noteExitWindow.h \
     noteHead.h \
+    noteTable.h \
     notedata.h \
     notemodel.h \
     noteview.h \

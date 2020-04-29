@@ -44,8 +44,11 @@
 #include <QCheckBox>
 #include <QBitmap>
 #include <vector>
+#include <QTableView>
+
 #include "mythrow.h"
 #include "noteview.h"
+#include "noteTable.h"
 #include "notedata.h"
 #include "notemodel.h"
 #include "dbmanager.h"
@@ -110,7 +113,9 @@ private:
     QPushButton* m_trashButton;                                     //删除按钮
     QLabel* m_countLabel;                                           //item记数
     QPushButton* m_sortLabel;                                       //升/降序按钮
+    QPushButton* m_changePage;                                      //列表/平铺切换按钮
     NoteView* m_noteView;                                           //listview
+    QTableView* m_noteTable;                                          //tableview
     NoteModel* m_noteModel;                                         //便签模板
     NoteModel* m_deletedNotesModel;                                 //删除模板
     QSortFilterProxyModel* m_proxyModel;                            //对项目进行排序，过滤
@@ -141,7 +146,8 @@ private:
     void setupDatabases();                                          //配置数据库
     void initializeSettingsDatabase();                              //初始化配置文件
     void createNewNoteIfEmpty();                                    //初始时创建一个便签
-    void setupModelView();                                          //代理模板
+    void setupModelView();                                          //代理列表模板
+    void setupTableView();                                          //代理表格模板
     void saveNoteToDB(const QModelIndex& noteIndex);                //保存到数据库
     NoteData* generateNote(const int noteID);                       //新建便签时初始化
     QString getFirstLine(const QString& str);                       //获取文本内容第一行
@@ -172,6 +178,7 @@ private slots:
     void onTrashButtonClicked();                                    //删除槽函数
     void onSearchEditTextChanged(const QString& keyword);           //搜索栏文本改变槽函数
     void sortSlot();                                                //升/降序槽函数
+    void changePageSlot();                                          //列表平铺切换槽函数
     void on_sort_2_btn_clicked();                                   //主题切换槽函数
     void delAction_del_SearchLine();                                //搜索清空按钮槽函数
     void on_SearchLine_textChanged(const QString &arg1);            //搜索栏图标显示

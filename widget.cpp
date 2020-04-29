@@ -33,6 +33,7 @@ Widget::Widget(QWidget *parent) :
   , m_trashButton(Q_NULLPTR)
   , m_countLabel(Q_NULLPTR)
   , m_sortLabel(Q_NULLPTR)
+  , m_changePage(Q_NULLPTR)
   , m_noteView(Q_NULLPTR)
   , m_noteModel(new NoteModel(this))
   , m_deletedNotesModel(new NoteModel(this))
@@ -46,6 +47,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     setupDatabases();
     setupModelView();
+    setupTableView();
     kyNoteInit();
     kyNoteConn();
     QTimer::singleShot(200,this, SLOT(InitData()));
@@ -109,6 +111,18 @@ void Widget::setupModelView()
 
     m_noteView->setItemDelegate(new NoteWidgetDelegate(m_noteView));    //安装定制delegate提供编辑功能
     m_noteView->setModel(m_proxyModel);//设置view的model是proxyModel，proxyModel作为view和QAbstractListModel的桥梁
+}
+
+void Widget::setupTableView()
+{
+    m_noteTable = static_cast<NoteTable*>(ui->tableView);
+    m_proxyModel->setSourceModel(m_noteModel);          //代理真正的数据模型，对数据进行排序和过滤
+    m_proxyModel->setFilterKeyColumn(3);                //此属性保存用于读取源模型内容的键的列,listview只有一列所以是0
+    m_proxyModel->setFilterRole(NoteModel::NoteFullTitle);//此属性保留项目角色，该角色用于在过滤项目时查询源模型的数据
+    m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);//
+
+    m_noteTable->setItemDelegate(new NoteWidgetDelegate(m_noteTable));    //安装定制delegate提供编辑功能
+    m_noteTable->setModel(m_proxyModel);//设置view的model是proxyModel，proxyModel作为view和QAbstractListModel的桥梁
 }
 
 void Widget::initializeSettingsDatabase()
@@ -186,6 +200,7 @@ void Widget::kyNoteInit()
     m_trashButton = ui->add_more_btn;
     m_countLabel = ui->label;
     m_sortLabel = ui->sort_btn;
+    m_changePage = ui->change_page_btn;
 
     //禁用双击编辑
     ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -219,7 +234,7 @@ void Widget::kyNoteInit()
 
     ui->tableView->hide();
     ui->set_btn->hide();
-    //ui->change_page_btn->hide();
+    ui->change_page_btn->hide();
     ui->add_more_btn->move(575, 0);
     ui->frame->hide();
     setAttribute(Qt::WA_TranslucentBackground);
@@ -243,6 +258,8 @@ void Widget::kyNoteConn()
     connect(m_noteModel, &NoteModel::rowsMoved, m_noteView, &NoteView::rowsMoved);
     //升/降序按钮
     connect(m_sortLabel,&QPushButton::clicked,this,&Widget::sortSlot);
+    //列表平铺切换
+    connect(m_changePage,&QPushButton::clicked,this,&Widget::changePageSlot);
     //搜索栏文本输入
     connect(m_ukui_SearchLine, &QLineEdit::textChanged, this, &Widget::onSearchEditTextChanged);
     //退出弹窗
@@ -1068,6 +1085,21 @@ void Widget::onSearchEditTextChanged(const QString& keyword)
         m_noteView->setAnimationEnabled(true);
         m_isOperationRunning = false;
     }
+}
+
+void Widget::changePageSlot()
+{
+    if(listflag != 0){
+        ui->tableView->show();
+        m_noteView->hide();
+        listflag = 0;
+    }else
+    {
+        ui->tableView->hide();
+        m_noteView->show();
+        listflag = 1;
+    }
+
 }
 
 void Widget::sortSlot()
