@@ -35,6 +35,7 @@ Widget::Widget(QWidget *parent) :
   , m_sortLabel(Q_NULLPTR)
   , m_changePage(Q_NULLPTR)
   , m_noteView(Q_NULLPTR)
+  , m_noteTable(Q_NULLPTR)
   , m_noteModel(new NoteModel(this))
   , m_deletedNotesModel(new NoteModel(this))
   , m_proxyModel(new QSortFilterProxyModel(this))
@@ -122,6 +123,8 @@ void Widget::setupTableView()
 
     m_noteTable->setItemDelegate(new NoteWidgetDelegate(m_noteTable));    //安装定制delegate提供编辑功能
     m_noteTable->setModel(m_proxyModel);//设置view的model是proxyModel，proxyModel作为view和QAbstractListModel的桥梁
+
+    m_noteTable->verticalHeader()->hide();
 }
 
 void Widget::initializeSettingsDatabase()
@@ -253,8 +256,8 @@ void Widget::kyNoteConn()
     //删除按钮
     connect(m_trashButton, &QPushButton::clicked, this, &Widget::onTrashButtonClicked);
     // note model rows moved
-    connect(m_noteModel, &NoteModel::rowsAboutToBeMoved, m_noteView, &NoteView::rowsAboutToBeMoved);
-    connect(m_noteModel, &NoteModel::rowsMoved, m_noteView, &NoteView::rowsMoved);
+//    connect(m_noteModel, &NoteModel::rowsAboutToBeMoved, m_noteView, &NoteView::rowsAboutToBeMoved);
+//    connect(m_noteModel, &NoteModel::rowsMoved, m_noteView, &NoteView::rowsMoved);
     //升/降序按钮
     connect(m_sortLabel,&QPushButton::clicked,this,&Widget::sortSlot);
     //列表平铺切换
@@ -457,8 +460,8 @@ void Widget::deleteSelectedNote()
             qDebug() << m_currentSelectedNoteProxy;
             //--m_noteCounter;
             deleteNote(m_currentSelectedNoteProxy, true);
-            int row = m_currentSelectedNoteProxy.row();
-            m_noteView->animateRemovedRow(QModelIndex(),row, row);
+//            int row = m_currentSelectedNoteProxy.row();
+//            m_noteView->animateRemovedRow(QModelIndex(),row, row);
         }
         m_isOperationRunning = false;
     }
@@ -621,7 +624,6 @@ QString Widget::getNoteDateEditor(QString dateEdited)
 //初始化一个笔记
 NoteData* Widget::generateNote(const int noteID)
 {
-    qDebug() << "进入此处1";
     NoteData* newNote = new NoteData(this);
     newNote->setId(noteID);
 
@@ -919,21 +921,14 @@ void Widget::editSlot()
 
 void Widget::newSlot()
 {
-    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-    //新建一个笔记本
-    //m_notebook =  new Edit_page(this);
-    //m_notebook->show();
-    //m_notebook->ui->textEdit->setFocus();
-
+    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;    
     //如果搜索栏有内容,则在新建便签时清空
     if(!m_ukui_SearchLine->text().isEmpty())
     {
         clearSearch();
     }
-
-    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+    //新建一个笔记本
     this->createNewNote();
-    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     m_countLabel->setText(QObject::tr("%1 records in total").arg(m_proxyModel->rowCount()));
 }
 
@@ -971,53 +966,6 @@ void Widget::listClickSlot(const QModelIndex& index)
 //* 如果在临时便笺存在时选择便笺，请删除临时便笺
 //* 突出显示所选便笺
 //* 将所选便笺内容加载到textedit
-//void Widget::listDoubleClickSlot(const QModelIndex& index)
-//{
-//    QModelIndex sourceIndex = m_proxyModel->mapToSource(index);
-//    //m_notebook =  new Edit_page(this,sourceIndex);
-//    NoteData* note = m_noteModel->getNote(index);
-//    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-//    if (note->m_note == nullptr) {
-//        int noteId = index.data(NoteModel::NoteID).toInt();
-//        m_notebook =  new Edit_page(this,noteId);
-//        note->m_note = m_notebook;
-//        m_editors.push_back(m_notebook);
-//        m_notebook->id = m_editors.size() - 1;
-//        qDebug() << "当前不存在";
-//        if(sender() != Q_NULLPTR){
-//            //获取当前选中item下标
-//            //QModelIndex indexInProxy = m_proxyModel->index(index.row(), 0);
-//            //加载便签
-//            selectNote(index);
-//            m_noteView->setCurrentRowActive(false);
-//        }
-//        //设置鼠标焦点
-//        note->m_note->ui->textEdit->setFocus();
-//        //移动光标至行末
-//        note->m_note->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-//        note->m_note->show();
-//    } else {
-//        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-//        note->m_note->show();
-//        note->m_note->raise();
-//        qDebug() << "当前已存在";
-//        if(sender() != Q_NULLPTR){
-//            //获取当前选中item下标
-//            //QModelIndex indexInProxy = m_proxyModel->index(index.row(), 0);
-//            //加载便签
-//            selectNote(index);
-//            m_noteView->setCurrentRowActive(false);
-//        }
-//        //设置鼠标焦点
-//        note->m_note->ui->textEdit->setFocus();
-//        //移动光标至行末
-//        note->m_note->ui->textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-//    }
-
-//    connect(note->m_note,SIGNAL(texthasChanged(int, int)), this,SLOT(onTextEditTextChanged(int, int)));
-//    connect(m_notebook ,SIGNAL(colorhasChanged(QColor)),this,SLOT(onColorChanged(QColor)));
-//}
-
 void Widget::listDoubleClickSlot(const QModelIndex& index)
 {
     int noteId = index.data(NoteModel::NoteID).toInt();
@@ -1089,16 +1037,17 @@ void Widget::onSearchEditTextChanged(const QString& keyword)
 void Widget::changePageSlot()
 {
     if(listflag != 0){
-        ui->tableView->show();
+        setupTableView();
+        ui->tableView->show();        
         m_noteView->hide();
         listflag = 0;
     }else
     {
+        setupModelView();
         ui->tableView->hide();
         m_noteView->show();
         listflag = 1;
     }
-
 }
 
 void Widget::sortSlot()
