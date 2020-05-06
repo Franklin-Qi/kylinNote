@@ -61,7 +61,7 @@ void noteExitWindow::on_pushButton_2_clicked()
     pNotebook->close();
     if(ui->checkBox->isChecked()==true)
     {
-        emit requestSetNoteNull();
+        //emit requestSetNoteNull();
         for (auto it = pNotebook->m_editors.begin(); it!= pNotebook->m_editors.end();it++) {
             (*it)->close();
 //            qDebug() << "before swap" << pNotebook->m_editors.size();

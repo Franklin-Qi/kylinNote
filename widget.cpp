@@ -846,11 +846,11 @@ void Widget::onTextEditTextChanged(int noteId, int i)
                 m_noteView->setAnimationEnabled(true);
             }
 
-            QModelIndex firstIndex = m_proxyModel->index(0,0);
+            //QModelIndex firstIndex = m_proxyModel->index(0,0);
             // Get the new data
             QString firstline = getFirstLine(m_editors[i]->ui->textEdit->toPlainText());
             QDateTime dateTime = QDateTime::currentDateTime();
-            QString noteDate = dateTime.toString(Qt::ISODate);
+            //QString noteDate = dateTime.toString(Qt::ISODate);
 
             // update model
             QMap<int, QVariant> dataValue;
@@ -1114,6 +1114,6 @@ void Widget::setNoteNullSlot()
     for (int i = 0; i < m_proxyModel->rowCount(); i++){
         QModelIndex index = m_proxyModel->index(i,0);
         NoteData* note = m_noteModel->getNote(index);
-        note->m_note == nullptr;
+        note->m_note = nullptr;
     }
 }
