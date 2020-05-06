@@ -45,6 +45,7 @@ select_color_page::~select_color_page()
 
 void select_color_page::paintEvent(QPaintEvent *)
 {
+    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);

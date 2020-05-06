@@ -46,6 +46,7 @@ SOURCES += \
     set_font_color_page.cpp \
     set_font_size_page.cpp \
     singleitemButton.cpp \
+    tableModel.cpp \
     text_editing.cpp \
     widget.cpp
 
@@ -67,6 +68,7 @@ HEADERS += \
     set_font_color_page.h \
     set_font_size_page.h \
     singleitemButton.h \
+    tableModel.h \
     text_editing.h \
     widget.h
 

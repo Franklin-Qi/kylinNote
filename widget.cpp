@@ -123,8 +123,6 @@ void Widget::setupTableView()
 
     m_noteTable->setItemDelegate(new NoteWidgetDelegate(m_noteTable));    //安装定制delegate提供编辑功能
     m_noteTable->setModel(m_proxyModel);//设置view的model是proxyModel，proxyModel作为view和QAbstractListModel的桥梁
-
-    m_noteTable->verticalHeader()->hide();
 }
 
 void Widget::initializeSettingsDatabase()
@@ -206,6 +204,9 @@ void Widget::kyNoteInit()
 
     //禁用双击编辑
     ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableView->verticalHeader()->hide();
+    ui->tableView->horizontalHeader()->hide();
     //隐藏滑动条
     ui->listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -236,7 +237,7 @@ void Widget::kyNoteInit()
 
     ui->tableView->hide();
     ui->set_btn->hide();
-    ui->change_page_btn->hide();
+    //ui->change_page_btn->hide();
     ui->add_more_btn->move(575, 0);
     ui->frame->hide();
     setAttribute(Qt::WA_TranslucentBackground);
