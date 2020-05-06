@@ -74,7 +74,7 @@ void noteExitWindow::on_pushButton_2_clicked()
 
 void noteExitWindow::color_clicked()
 {
-    if(!pNotebook->dack_wight_flag)
+    if(!pNotebook->m_isThemeChanged)
     {
         light_show();
     }else{

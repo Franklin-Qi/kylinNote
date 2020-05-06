@@ -355,7 +355,7 @@ void Edit_page::yellow_btn_change()
 
 void Edit_page::wight_btn_change()
 {
-    if(pNotebook->dack_wight_flag){
+    if(pNotebook->m_isThemeChanged){
      m_editColor = QColor(236,238,242);
      m_noteHead->color_widget = QColor(236,238,242);
     }else{
@@ -399,7 +399,7 @@ void Edit_page::contextMenuEvent(QContextMenuEvent *event)
     Q_UNUSED(event);
     QMenu * menu = new QMenu(this);
     menu->resize(50,20);
-    if(!pNotebook->dack_wight_flag)
+    if(!pNotebook->m_isThemeChanged)
     {
         menu->setStyleSheet(QString::fromUtf8("color: rgb(0, 0, 0);\n"
                                               "background:rgb(255,255,255);\n"

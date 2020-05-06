@@ -96,7 +96,7 @@ void Text_editing::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
-    if(pNotebook->dack_wight_flag){
+    if(pNotebook->m_isThemeChanged){
         painter.setBrush(QColor(0, 0, 0));
     }else{
         painter.setBrush(QColor(240, 240, 240));

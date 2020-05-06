@@ -47,7 +47,6 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     setupDatabases();
     setupModelView();
-    setupTableView();
     kyNoteInit();
     kyNoteConn();
     QTimer::singleShot(200,this, SLOT(InitData()));
@@ -193,7 +192,7 @@ void Widget::kyNoteInit()
 {
     sortflag = 1;//排序
     listflag = 1;//平铺\列表
-    dack_wight_flag = -1;//主题
+    m_isThemeChanged = -1;//主题
 
     m_ukui_SearchLine = ui->SearchLine;
     m_newKynote = ui->newKynote;
@@ -1132,17 +1131,17 @@ void Widget::delAction_del_SearchLine()
 
 void Widget::on_sort_2_btn_clicked()
 {
-    if(dack_wight_flag)
+    if(m_isThemeChanged)
     {
 
         light_show();
-        dack_wight_flag = 0;
+        m_isThemeChanged = 0;
         sink = 1;
     }else{
 
 
         black_show();
-        dack_wight_flag = 1;
+        m_isThemeChanged = 1;
         sink = 0;
     }
 }
