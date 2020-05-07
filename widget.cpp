@@ -632,6 +632,7 @@ NoteData* Widget::generateNote(const int noteID)
     newNote->setCreationDateTime(noteDate);
     newNote->setLastModificationDateTime(noteDate);
     newNote->setFullTitle(QStringLiteral("New Note"));
+    newNote->setNoteColor(16777215);
     newNote->m_note = nullptr;
     return newNote;
 }

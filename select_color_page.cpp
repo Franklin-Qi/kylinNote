@@ -33,7 +33,7 @@ select_color_page::select_color_page(Widget* page ,QWidget *parent) :
     pNotebook = page;
     this->setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
-    light_show();
+    //color_clicked();
     connect(pNotebook->ui->sort_2_btn,SIGNAL(clicked()),this,SLOT(color_clicked()));
 }
 
@@ -41,7 +41,6 @@ select_color_page::~select_color_page()
 {
     delete ui;
 }
-
 
 void select_color_page::paintEvent(QPaintEvent *)
 {
@@ -65,8 +64,12 @@ void select_color_page::paintEvent(QPaintEvent *)
 
 void select_color_page::color_clicked()
 {
+    qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     if(sink)
+    {
+        qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         light_show();
+    }
     else
         black_show();
 }
@@ -75,15 +78,14 @@ void select_color_page::black_show()
 {
     ui->widget->setStyleSheet(QString::fromUtf8("background:rgb(19,20,20);\n"
                                                 "border-radius:4px;"));
-    ui->wight_btn->setStyleSheet(QString::fromUtf8("background:rgba(236,238,242,1);\n"
+    ui->white_btn->setStyleSheet(QString::fromUtf8("background:rgba(236,238,242,1);\n"
                                                    "border-radius:2px;"));
 }
-
 
 void select_color_page::light_show()
 {
     ui->widget->setStyleSheet(QString::fromUtf8("background:rgb(240,240,240);\n"
                                                 "border-radius:4px;"));
-    ui->wight_btn->setStyleSheet(QString::fromUtf8("background:rgb(19,20,20);\n"
+    ui->white_btn->setStyleSheet(QString::fromUtf8("background:rgb(19,20,20);\n"
                                                    "border-radius:2px;"));
 }
