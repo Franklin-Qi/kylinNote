@@ -237,7 +237,7 @@ void Widget::kyNoteInit()
 
     ui->tableView->hide();
     ui->set_btn->hide();
-    //ui->change_page_btn->hide();
+    ui->change_page_btn->hide();
     ui->add_more_btn->move(575, 0);
     ui->frame->hide();
     setAttribute(Qt::WA_TranslucentBackground);

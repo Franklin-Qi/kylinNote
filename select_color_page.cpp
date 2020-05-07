@@ -47,7 +47,11 @@ void select_color_page::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor(0, 0, 0));
+    if(pNotebook->m_isThemeChanged){
+        painter.setBrush(QColor(0, 0, 0));
+    }else{
+        painter.setBrush(QColor(240, 240, 240));
+    }
 
     // 小三角区域;
     QPolygon trianglePolygon;
