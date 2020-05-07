@@ -20,7 +20,7 @@
 
 #include <QWidget>
 
-#define SHADOW_WIDTH 15                 // 窗口阴影宽度;
+#define SHADOW_WIDTH 1                  // 窗口阴影宽度;
 #define TRIANGLE_WIDTH 15               // 小三角的宽度;
 #define TRIANGLE_HEIGHT 10              // 小三角的高度;
 #define BORDER_RADIUS 5                 // 窗口边角的弧度;

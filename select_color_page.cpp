@@ -33,7 +33,6 @@ select_color_page::select_color_page(Widget* page ,QWidget *parent) :
     pNotebook = page;
     this->setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
-    //color_clicked();
     connect(pNotebook->ui->sort_2_btn,SIGNAL(clicked()),this,SLOT(color_clicked()));
 }
 
