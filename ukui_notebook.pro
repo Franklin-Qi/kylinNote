@@ -8,7 +8,7 @@ QT       += core gui printsupport sql concurrent gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ukui_notebook
+TARGET = ukui-notebook
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use

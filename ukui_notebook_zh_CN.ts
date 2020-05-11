@@ -18,7 +18,7 @@
         <location filename="edit_page.cpp" line="473"/>
         <source>Close</source>
         <translatorcomment>关闭</translatorcomment>
-        <translation>闭</translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <location filename="edit_page.cpp" line="475"/>
