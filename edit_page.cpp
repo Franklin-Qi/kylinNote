@@ -469,7 +469,7 @@ void Edit_page::contextMenuEvent(QContextMenuEvent *event)
                                               "background:rgb(19,20,20);\n"
                                               ""));
     }
-
+#if (QT_VERSION >= QT_VERSION_CHECK(5,12,0))
     QAction * delete_the_widget = new QAction(tr("Close"));
     delete_the_widget->setIcon(QIcon(":/image/1x/delete.png"));
     QAction * t3 = new QAction(tr("Open Notepad"));
@@ -478,12 +478,13 @@ void Edit_page::contextMenuEvent(QContextMenuEvent *event)
     connect(t3, SIGNAL(triggered()), this, SLOT(show_note_page()));
     menu->addAction(delete_the_widget);
     menu->addAction(t3);
-    // QAction * t1 = new QAction(tr("新建"));
-    //t1->setIcon(QIcon(":/image/1x/sourch.png"));
-    //connect(t1, SIGNAL(triggered()), this, SLOT(add_new_page()));
-    // menu->addAction(t1);
+    QAction * t1 = new QAction(tr("新建"));
+    t1->setIcon(QIcon(":/image/1x/sourch.png"));
+    connect(t1, SIGNAL(triggered()), this, SLOT(add_new_page()));
+    menu->addAction(t1);
     menu->move(cursor().pos()); //让菜单显示的位置在鼠标的坐标上
     menu->show();
+#endif
 }
 
 void Edit_page::clear_the_page()
