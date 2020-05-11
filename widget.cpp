@@ -928,7 +928,7 @@ void Widget::onColorChanged(const QColor &color,int noteId)
 
 void Widget::exitSlot()
 {
-    m_noteExitWindow->setWindowFlags(m_noteExitWindow->windowFlags() | Qt::WindowStaysOnTopHint);
+    //m_noteExitWindow->setWindowFlags(m_noteExitWindow->windowFlags() | Qt::WindowStaysOnTopHint);
     m_noteExitWindow->show();
     m_noteExitWindow->raise();
 }
