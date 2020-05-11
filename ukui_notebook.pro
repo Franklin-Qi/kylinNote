@@ -32,7 +32,7 @@ SOURCES += \
     edit_page.cpp \
     emptyNotes.cpp \
     fontButton.cpp \
-        main.cpp \
+    main.cpp \
     mythrow.cpp \
     noteExitWindow.cpp \
     noteHead.cpp \
@@ -92,3 +92,14 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     image.qrc
+
+DISTFILES +=
+unix {
+    target.path = /usr/bin/
+    INSTALLS += target
+}
+
+desktopfile.files = ukui_notebook.desktop
+desktopfile.path = /usr/share/applications/
+
+INSTALLS += desktopfile
