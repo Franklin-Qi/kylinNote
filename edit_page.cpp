@@ -478,7 +478,7 @@ void Edit_page::contextMenuEvent(QContextMenuEvent *event)
     connect(t3, SIGNAL(triggered()), this, SLOT(show_note_page()));
     menu->addAction(delete_the_widget);
     menu->addAction(t3);
-    QAction * t1 = new QAction(tr("新建"));
+    QAction * t1 = new QAction(tr("New"));
     t1->setIcon(QIcon(":/image/1x/sourch.png"));
     connect(t1, SIGNAL(triggered()), this, SLOT(add_new_page()));
     menu->addAction(t1);
