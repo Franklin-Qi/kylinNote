@@ -33,26 +33,8 @@ public:
     explicit noteHead(QWidget *parent = nullptr);
     ~noteHead();
 
-
-    void paintEvent(QPaintEvent *event)
-    {
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
-        painter.setBrush(QBrush(color_widget));
-        painter.setPen(Qt::transparent);
-        QRect rect = this->rect();
-        rect.setWidth(rect.width() - 0);
-        rect.setHeight(rect.height() - 0);
-        painter.drawRoundedRect(rect, 7, 0);
-        //也可用QPainterPath 绘制代替 painter.drawRoundedRect(rect, 15, 15);
-        {
-            QPainterPath painterPath;
-            painterPath.addRoundedRect(rect, 7, 0);
-            painter.drawPath(painterPath);
-        }
-        QWidget::paintEvent(event);
-    }
-    QColor color_widget =QColor(15,161,90) ;
+    void paintEvent(QPaintEvent *event);
+    QColor color_widget;
 
 
 private:
