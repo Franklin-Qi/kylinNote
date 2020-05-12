@@ -536,11 +536,21 @@ void Widget::showNoteInEditor(const QModelIndex &noteIndex)
     m_notebook->m_noteHeadMenu->ui->pushButtonExit->setStyleSheet(_Stylesheet);
     m_notebook->m_noteHeadMenu->ui->pushButtonMenu->setStyleSheet(_Stylesheet);
     if(m_color == QColor(0,0,0))
-    {
+    {qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         QPixmap pixmap1;
         QPixmap pixmap2;
         pixmap1 = QPixmap(":/image/1x/close_light.png");
         pixmap2 = QPixmap(":/image/1x/more_light.png");
+        m_notebook->m_noteHeadMenu->ui->pushButtonExit->setIcon(pixmap1);
+        m_notebook->m_noteHeadMenu->ui->pushButtonExit->setIconSize(QSize(20,20));
+        m_notebook->m_noteHeadMenu->ui->pushButtonMenu->setIcon(pixmap2);
+        m_notebook->m_noteHeadMenu->ui->pushButtonMenu->setIconSize(QSize(20,20));
+    }else
+    {qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
+        QPixmap pixmap1;
+        QPixmap pixmap2;
+        pixmap1 = QPixmap(":/image/1x/close_block.png");
+        pixmap2 = QPixmap(":/image/1x/more_block.png");
         m_notebook->m_noteHeadMenu->ui->pushButtonExit->setIcon(pixmap1);
         m_notebook->m_noteHeadMenu->ui->pushButtonExit->setIconSize(QSize(20,20));
         m_notebook->m_noteHeadMenu->ui->pushButtonMenu->setIcon(pixmap2);
