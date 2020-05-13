@@ -63,4 +63,6 @@ void noteHeadMenu::buttonInit()
     ui->pushButtonExit->setIconSize(QSize(20,20));
     ui->pushButtonMenu->setIcon(pixmap2);
     ui->pushButtonMenu->setIconSize(QSize(20,20));
+
+    ui->pushButtonMenu->hide();
 }

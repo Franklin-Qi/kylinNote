@@ -77,6 +77,7 @@ Edit_page::Edit_page(Widget* page, int noteId, QWidget *parent) :
     m_noteHeadMenu->hide();
     ui->textEdit->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    connect(m_noteHeadMenu->ui->pushButtonExit,&QPushButton::clicked,this,&Edit_page::closeSlot);
     connect(ui->textEdit,&QTextEdit::textChanged,this,&Edit_page::textChangedSlot);
     connect(pNotebook->ui->sort_2_btn,SIGNAL(clicked()),this,SLOT(color_clicked()));
     color_clicked();
@@ -685,7 +686,7 @@ void Edit_page::contextMenuEvent(QContextMenuEvent *event)
     delete_the_widget->setIcon(QIcon(":/image/1x/delete.png"));
     QAction * t3 = new QAction(tr("Open Notepad"));
     t3->setIcon(QIcon(":/image/1x/open_note-book.png"));
-    connect(delete_the_widget, SIGNAL(triggered()), this, SLOT(clear_the_page()));
+    connect(delete_the_widget, SIGNAL(triggered()), this, SLOT(closeSlot()));
     connect(t3, SIGNAL(triggered()), this, SLOT(show_note_page()));
     menu->addAction(delete_the_widget);
     menu->addAction(t3);
@@ -698,7 +699,7 @@ void Edit_page::contextMenuEvent(QContextMenuEvent *event)
 #endif
 }
 
-void Edit_page::clear_the_page()
+void Edit_page::closeSlot()
 {
     this->close();
 }
