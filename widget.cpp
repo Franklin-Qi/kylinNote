@@ -415,6 +415,13 @@ void Widget::initListModel()
     //隐藏滑动条
     ui->listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    //启用项的拖动
+    ui->listView->setDragEnabled(true);
+    //允许用户将内部或外部项拖放到视图中
+    ui->listView->setAcceptDrops(true);
+    //显示当前拖动的项将被放在什么地方
+    ui->listView->setDropIndicatorShown(true);
 }
 
 void Widget::initTableModel()
