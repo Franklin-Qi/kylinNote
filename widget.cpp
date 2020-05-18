@@ -54,6 +54,8 @@ Widget::Widget(QWidget *parent) :
         QApplication::installTranslator(translator);
     }
     ui->setupUi(this);
+    ui->widget->setMouseTracking(true);
+    this->setMouseTracking(true);
     setupDatabases();
     setupModelView();
     kyNoteInit();
@@ -411,17 +413,17 @@ void Widget::set_all_btn_attribute()
 void Widget::initListModel()
 {
     //禁用双击编辑
-    ui->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_noteView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     //隐藏滑动条
-    ui->listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->listView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    m_noteView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_noteView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_noteView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     //启用项的拖动
-    ui->listView->setDragEnabled(true);
+    m_noteView->setDragEnabled(true);
     //允许用户将内部或外部项拖放到视图中
-    ui->listView->setAcceptDrops(true);
+    //m_noteView->setAcceptDrops(true);
     //显示当前拖动的项将被放在什么地方
-    ui->listView->setDropIndicatorShown(true);
+    m_noteView->setDropIndicatorShown(true);
 }
 
 void Widget::initTableModel()
@@ -789,7 +791,7 @@ void Widget::black_show()
                                                     "color: rgb(255, 255, 255);\n"
                                                     "opacity:0.08;\n"
                                                     "border-radius:4px;"));
-    ui->listView->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255, 0);\n"
+    m_noteView->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255, 0);\n"
                                                   "selection-background-color:rgba(72,72,76,1);"));
     ui->label->setStyleSheet(QString::fromUtf8("background-color: rgb();\n"
                                                "color: rgb(126, 126, 126);"));
@@ -833,7 +835,7 @@ void Widget::light_show()
                                                     "color: rgb(0, 0, 0);\n"
                                                     "opacity:0.08;\n"
                                                     "border-radius:4px;"));
-    ui->listView->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
+    m_noteView->setStyleSheet(QString::fromUtf8("background-color: rgba(255, 255, 255, 0);\n"
                                                   "selection-background-color:rgba(255, 255, 255, 0);"));
     ui->label->setStyleSheet(QString::fromUtf8("background-color: rgba();\n"
                                                "color: rgb(43,49,56);\n"

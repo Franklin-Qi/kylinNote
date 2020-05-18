@@ -33,7 +33,7 @@ NoteView::NoteView(QWidget *parent)
     , m_isMousePressed(false)
     , m_rowHeight(38)
 {
-    this->setAttribute(Qt::WA_MacShowFocusRect, 0);
+    //不可编辑
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     //一次性定时器,槽函数只处理一次
     QTimer::singleShot(0, this, SLOT(init()));
@@ -197,31 +197,32 @@ void NoteView::init()
 {
     setMouseTracking(true);
     setUpdatesEnabled(true);
+    //当鼠标进入或离开小部件时，强制Qt生成绘制事件
     viewport()->setAttribute(Qt::WA_Hover);
 
-    setupStyleSheet();
     setupSignalsSlots();
 }
 
-void NoteView::mouseMoveEvent(QMouseEvent*e)
+void NoteView::mouseMoveEvent(QMouseEvent* e)
 {
-    if(!m_isMousePressed)
+    if(!m_isMousePressed){
         QListView::mouseMoveEvent(e);
+    }
 }
 
-void NoteView::mousePressEvent(QMouseEvent*e)
+void NoteView::mousePressEvent(QMouseEvent* e)
 {
     m_isMousePressed = true;
     QListView::mousePressEvent(e);
 }
 
-void NoteView::mouseReleaseEvent(QMouseEvent*e)
+void NoteView::mouseReleaseEvent(QMouseEvent* e)
 {
     m_isMousePressed = false;
     QListView::mouseReleaseEvent(e);
 }
 
-bool NoteView::viewportEvent(QEvent*e)
+bool NoteView::viewportEvent(QEvent* e)
 {
     qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
     if(model() != Q_NULLPTR){
@@ -347,18 +348,3 @@ void NoteView::setupSignalsSlots()
     });
 }
 
-void NoteView::setupStyleSheet()
-{
-    QString ss = QString("QListView {background-color: rgb(255, 255, 255);} "
-                         "QScrollBar {margin-right: 2px; background: transparent;} "
-                         "QScrollBar:hover { background-color: rgb(217, 217, 217);}"
-                         "QScrollBar:handle:vertical:hover { background: rgb(170, 170, 171); } "
-                         "QScrollBar:handle:vertical:pressed { background: rgb(149, 149, 149);}"
-                         "QScrollBar:vertical { border: none; width: 10px; border-radius: 4px;} "
-                         "QScrollBar::handle:vertical { border-radius: 4px; background: rgb(188, 188, 188); min-height: 20px; }  "
-                         "QScrollBar::add-line:vertical { height: 0px; subcontrol-position: bottom; subcontrol-origin: margin; }  "
-                         "QScrollBar::sub-line:vertical { height: 0px; subcontrol-position: top; subcontrol-origin: margin; }"
-                         );
-
-    setStyleSheet(ss);
-}
