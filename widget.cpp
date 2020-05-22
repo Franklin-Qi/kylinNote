@@ -19,6 +19,7 @@
 #include "ui_widget.h"
 #include "listViewModeDelegate.h"
 #include "edit_page.h"
+#include "headerbar.h"
 
 #define FIRST_LINE_MAX 80
 int sink = 0;
@@ -258,6 +259,9 @@ void Widget::kyNoteInit()
     setAttribute(Qt::WA_TranslucentBackground);
     //退出框
     m_noteExitWindow = new noteExitWindow(this);
+
+//    auto headerBar = new HeaderBar(this);
+//    headerBar->show();
 }
 
 void Widget::kyNoteConn()
