@@ -109,30 +109,6 @@ void iconViewModeDelegate::setAnimationDuration(const int duration)
 void iconViewModeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyleOptionViewItem opt = option;
-    opt.rect.setWidth(option.rect.width() - m_rowRightOffset);      //678
-
-    int currentFrame = m_timeLine->currentFrame();                  //0
-    double rate = (currentFrame/(m_maxFrame * 1.0));                //0
-    double height = m_rowHeight * rate;                             //0
-
-    //默认Normal
-    switch(m_state){
-    case Insert:
-    case Remove:
-    case MoveOut:
-        if(index == m_animatedIndex){
-            opt.rect.setHeight(int(height));
-            //opt.backgroundBrush.setColor(m_notActiveColor);
-        }
-        break;
-    case MoveIn:
-        if(index == m_animatedIndex){
-            opt.rect.setY(int(height));
-        }
-        break;
-    case Normal:
-        break;
-    }
 
     //绘制第一层便签头背景
     int m_noteColor{index.data(NoteModel::NoteColor).toInt()};
@@ -172,20 +148,9 @@ void iconViewModeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 
 QSize iconViewModeDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QSize result = QStyledItemDelegate::sizeHint(option, index);        //QSize(0, 23)
-    if(index == m_animatedIndex){
-        if(m_state == MoveIn){
-            result.setHeight(m_rowHeight);
-        }else{
-            double rate = m_timeLine->currentFrame()/(m_maxFrame * 1.0);
-            double height = m_rowHeight * rate;
-            result.setHeight(int(height));
-        }
-    }else{
-        result.setHeight(m_rowHeight);
-    }
-
-    return result;
+    Q_UNUSED(option);
+    Q_UNUSED(index);
+    return QSize(218,200);
 }
 
 QTimeLine::State iconViewModeDelegate::animationState()

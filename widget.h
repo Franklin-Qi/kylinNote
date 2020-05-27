@@ -153,7 +153,6 @@ private:
     void createNewNoteIfEmpty();                                    //初始时创建一个便签
     void setupListModeModel();                                      //代理列表模板
     void setupIconModeModel();                                      //代理图标模板
-    //void setupTableView();                                        //代理表格模板
     void saveNoteToDB(const QModelIndex& noteIndex);                //保存到数据库
     NoteData* generateNote(const int noteID);                       //新建便签时初始化
     QString getFirstLine(const QString& str);                       //获取文本内容第一行
