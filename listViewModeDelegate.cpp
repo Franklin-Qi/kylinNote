@@ -270,9 +270,9 @@ void listViewModeDelegate::paintBackground(QPainter *painter, const QStyleOption
 
 void listViewModeDelegate::paintLabels(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    const int leftOffsetX = 20;
+    const int leftOffsetX = 20;  // 左边距
     const int topOffsetY = 18;   // 标题上方的空格
-    const int spaceY = 5;       // 标题和日期之间的空格
+    const int spaceY = 5;        // 标题和日期之间的空格
 
     QString title{index.data(NoteModel::NoteFullTitle).toString()};
 

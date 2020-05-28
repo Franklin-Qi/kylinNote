@@ -109,15 +109,16 @@ void iconViewModeDelegate::setAnimationDuration(const int duration)
 void iconViewModeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyleOptionViewItem opt = option;
-
+    qDebug() << "icon paint " << opt.rect.width() << opt.rect.height();
     //绘制第一层便签头背景
     int m_noteColor{index.data(NoteModel::NoteColor).toInt()};
     painter->setRenderHint(QPainter::Antialiasing);  // 反锯齿;
     painter->setBrush(QBrush(intToQcolor(m_noteColor)));
 
     painter->setPen(Qt::transparent);
-    opt.rect.setWidth(218);
-    opt.rect.setHeight(opt.rect.height() - 5);
+    opt.rect.setLeft(opt.rect.left() + 3);
+    opt.rect.setWidth(opt.rect.width() - 12);
+    opt.rect.setHeight(opt.rect.height() - 46);
     {
         QPainterPath painterPath;
         painterPath.addRoundedRect(opt.rect, 7, 7);
@@ -133,9 +134,8 @@ void iconViewModeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
         painter->setBrush(QColor(245,245,245));
     }
     painter->setPen(Qt::transparent);
-    opt.rect.setWidth(678);
     opt.rect.setHeight(opt.rect.height() - 0);
-    opt.rect.setLeft(opt.rect.left() + 5);
+    opt.rect.setTop(opt.rect.top() + 5);
     {
         QPainterPath painterPath;
         painterPath.addRoundedRect(opt.rect, 0, 0);
@@ -148,9 +148,10 @@ void iconViewModeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 
 QSize iconViewModeDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    qDebug() << "icon sizeHint";
     Q_UNUSED(option);
     Q_UNUSED(index);
-    return QSize(218,200);
+    return QSize(227,246);
 }
 
 QTimeLine::State iconViewModeDelegate::animationState()
@@ -233,9 +234,10 @@ void iconViewModeDelegate::paintBackground(QPainter *painter, const QStyleOption
 
 void iconViewModeDelegate::paintLabels(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    const int leftOffsetX = 20;
-    const int topOffsetY = 18;   // 标题上方的空格
-    const int spaceY = 5;       // 标题和日期之间的空格
+    const int leftOffsetX = 20;        // 标题左边距
+    const int leftoffsetXdate = 75;    // 日期左边距
+    const int topOffsetY = 18;         // 标题上方的空格
+    const int spaceY = 160;            // 标题和日期之间的空格
 
     QString title{index.data(NoteModel::NoteFullTitle).toString()};
 
@@ -255,11 +257,13 @@ void iconViewModeDelegate::paintLabels(QPainter* painter, const QStyleOptionView
     double titleRectPosY = rowPosY;
     double titleRectWidth = rowWidth - 2.0 * leftOffsetX;
     double titleRectHeight = fmRectTitle.height() + topOffsetY;
-
-    double dateRectPosX = rowPosX + leftOffsetX;
-    double dateRectPosY = rowPosY + fmRectTitle.height() + topOffsetY;
-    double dateRectWidth = rowWidth - 2.0 * leftOffsetX;
-    double dateRectHeight = fmRectDate.height() + spaceY;
+    qDebug() << "titleRectHeight" << titleRectHeight << fmRectTitle.height();
+    double dateRectPosX = rowPosX + leftoffsetXdate;
+    //double dateRectPosY = rowPosY + fmRectTitle.height() + topOffsetY;
+    double dateRectPosY = rowPosY + 26 + topOffsetY;
+    double dateRectWidth = rowWidth - 2.0 * leftoffsetXdate;
+    //double dateRectHeight = fmRectDate.height() + spaceY;
+    double dateRectHeight = 18 + spaceY;
 
     double rowRate = m_timeLine->currentFrame()/(m_maxFrame * 1.0);
     double currRowHeight = m_rowHeight * rowRate;
@@ -283,6 +287,7 @@ void iconViewModeDelegate::paintLabels(QPainter* painter, const QStyleOptionView
 
             if((fmRectTitle.height() + topOffsetY) >= ((1.0 - rowRate) * m_rowHeight)){
                 titleRectHeight = (fmRectTitle.height() + topOffsetY) - (1.0 - rowRate) * m_rowHeight;
+                qDebug() << "dateRectHeight1111" << dateRectHeight;
             }else{
                 titleRectHeight = 0;
 
@@ -299,8 +304,9 @@ void iconViewModeDelegate::paintLabels(QPainter* painter, const QStyleOptionView
             dateRectPosY = titleRectHeight + rowPosY;
         }
     }
-
+    //qDebug() << "dateRectHeight" << dateRectHeight << fmRectDate.height() << dateRectPosY << fmRectTitle.height();
     // 绘图标题和日期
+    // 超出字符串转换为...
     title = fmTitle.elidedText(title, Qt::ElideRight, int(titleRectWidth));
     if(sink == 1)
     {
