@@ -41,6 +41,12 @@ Edit_page::Edit_page(Widget* page, int noteId, QWidget *parent) :
   , ui(new Ui::Edit_page)
   , m_editColor(0,0,0)
   , m_noteId(noteId)
+  , boldFlag(0)
+  , italickFlag(0)
+  , underlineFlag(0)
+  , strikeoutFlag(0)
+  , unorderedlistFlag(0)
+  , orderedlistFlag(0)
 {
     qDebug()<<"aa"<<++count;
     ui->setupUi(this);
@@ -146,20 +152,40 @@ void Edit_page::showBoldBtn()
 
     QTextCursor cursor = ui->textEdit->textCursor();
     if (!cursor.hasSelection()){
+        qDebug()<<"-------showBoldBtn------------111";
         cursor.select(QTextCursor::WordUnderCursor);
-    }else{
-        cursor.mergeCharFormat(fmt);
     }
-
-    ui->textEdit->mergeCurrentCharFormat(fmt);
+    if(cursor.charFormat().fontWeight() == QFont::Bold)
+    {
+        qDebug() << "textfont bold";
+        fmt.setFontWeight(QFont::Normal);
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }else{
+        qDebug() << "textfont bold222";
+        fmt.setFontWeight(QFont::Bold);
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }
 }
+
 //斜体
 void Edit_page::showItalicBtn()
 {
     qDebug()<<"-------showItalicBtn------------";
     QTextCharFormat fmt;
     fmt.setFontItalic(text_edit_page->ui->ItalicBtn->isCheckable() );// ? QFont::StyleItalic : QFont::Normal);
-    ui->textEdit->mergeCurrentCharFormat(fmt);
+
+    QTextCursor cursor = ui->textEdit->textCursor();
+    qDebug() << cursor.charFormat().fontItalic();
+    if(cursor.charFormat().fontItalic())  //return boolProperty(FontItalic)
+    {
+        qDebug() << "italic true";
+        fmt.setFontItalic(QFont::StyleNormal);
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }else{
+        qDebug() << "italic false";
+        fmt.setFontItalic(QFont::StyleItalic);
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }
 }
 
 //下划线
@@ -168,15 +194,34 @@ void Edit_page::showUnderlineBtn()
     qDebug()<<"-------showUnderlineBtn------------";
     QTextCharFormat fmt;
     fmt.setFontUnderline(text_edit_page->ui->underlineBtn->isCheckable());// ? QFont::UnderlineResolved : QFont::Normal );
-    ui->textEdit->mergeCurrentCharFormat(fmt);
+
+    QTextCursor cursor = ui->textEdit->textCursor();
+    qDebug() << cursor.charFormat().fontItalic();
+    if(cursor.charFormat().fontUnderline())  //
+    {
+        fmt.setFontUnderline(QFont::StyleNormal);
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }else{
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }
 }
+
 //删除线
 void Edit_page::showStrikeOutResolved()
 {
     qDebug()<<"-------showStrikeOutResolved------------";
     QTextCharFormat fmt;
     fmt.setFontStrikeOut(text_edit_page->ui->StrikeOutResolvedBtn->isCheckable());// ? QFont::StrikeOutResolved : QFont::Normal );
-    ui->textEdit->mergeCurrentCharFormat(fmt);
+
+    QTextCursor cursor = ui->textEdit->textCursor();
+    qDebug() << cursor.charFormat().fontItalic();
+    if(cursor.charFormat().fontStrikeOut())  //
+    {
+        fmt.setFontStrikeOut(QFont::StyleNormal);
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }else{
+        ui->textEdit->mergeCurrentCharFormat(fmt);
+    }
 }
 
 //无序列表
@@ -194,17 +239,19 @@ void Edit_page::showList(bool index)
 
     QTextBlockFormat blockFmt = cursor.blockFormat();
     QTextListFormat listFmt;
+    //如果光标位置（）在作为列表一部分的块中，则返回当前列表；否则返回nullptr
     if(cursor.currentList())
     {
         listFmt = cursor.currentList()->format();
     }
     else
     {
-        listFmt.setIndent(blockFmt.indent() + 1);
+        listFmt.setIndent(blockFmt.indent() + 1);           //indent  返回段落的缩进  setIndent  设置列表格式的缩进
         blockFmt.setIndent(0);
-        cursor.setBlockFormat(blockFmt);
+        cursor.setBlockFormat(blockFmt);                    //将当前块（或选定内容中包含的所有块）的块格式设置为blockFmt
     }
     listFmt.setStyle(style);
+    //创建并返回具有给定格式的新列表，并使当前段落成为第一个列表项中的光标
     cursor.createList(listFmt);
 
     cursor.endEditBlock();
@@ -219,7 +266,7 @@ void Edit_page::showNUMList(bool index)
 
     QTextListFormat::Style style = QTextListFormat::ListDisc;
 
-    style = QTextListFormat::ListDecimal;
+    style = QTextListFormat::ListDecimal;           //按升序排列的十进制值
 
     cursor.beginEditBlock();    //设置缩进值
 

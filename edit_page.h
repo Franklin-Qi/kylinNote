@@ -104,6 +104,12 @@ private:
     QString color[11];
     QColor color_num[11];
 
+    int boldFlag;                                               //粗体
+    int italickFlag;                                            //斜体
+    int underlineFlag;                                          //下划线
+    int strikeoutFlag;                                          //删除线
+    int unorderedlistFlag;                                      //无序列表
+    int orderedlistFlag;                                        //有序列表
 
 signals:
     void texthasChanged(int noteId, int id);
