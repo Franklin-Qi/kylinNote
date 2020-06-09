@@ -48,8 +48,8 @@ Edit_page::Edit_page(Widget* page, int noteId, QWidget *parent) :
     //标题
     this->setWindowTitle(tr("ukui-memo"));
     //任务栏图标
-    setWindowIcon(QIcon(":/image/kylin-notebook.svg"));
-
+    //setWindowIcon(QIcon(":/image/kylin-notebook.svg"));
+    setWindowIcon(QIcon::fromTheme("kylin-notebook"));
     QBitmap bmp(this->size());
     bmp.fill();
     QPainter p(&bmp);

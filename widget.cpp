@@ -224,7 +224,8 @@ void Widget::kyNoteInit()
     //标题
     this->setWindowTitle(tr("ukui-note"));
     //任务栏图标
-    setWindowIcon(QIcon::fromTheme("kylin-notebook",QIcon(":/image/kylin-notebook.svg")));
+    //setWindowIcon(QIcon::fromTheme("kylin-notebook",QIcon(":/image/kylin-notebook.svg")));
+    setWindowIcon(QIcon::fromTheme("kylin-notebook"));
     //按钮
     set_all_btn_attribute();
     //搜索框
@@ -722,7 +723,7 @@ NoteData* Widget::generateNote(const int noteID)
     QDateTime noteDate = QDateTime::currentDateTime();
     newNote->setCreationDateTime(noteDate);
     newNote->setLastModificationDateTime(noteDate);
-    newNote->setFullTitle(QStringLiteral("New Note"));
+    newNote->setFullTitle(tr("Welcome to use Kylin system, you will experience more intimate service."));
     newNote->setNoteColor(16777215);
     newNote->m_note = nullptr;
     return newNote;
