@@ -460,6 +460,8 @@ void Widget::initListMode()
     m_noteView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_noteView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_noteView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    //视图将一次滚动一个像素的内容
+    m_noteView->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     //启用项的拖动
     m_noteView->setDragEnabled(true);
     //允许用户将内部或外部项拖放到视图中
