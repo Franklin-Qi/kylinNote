@@ -652,8 +652,8 @@ void Widget::createNewNote()
         saveNoteToDB(m_currentSelectedNoteProxy);
 
         qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
-        int row = m_currentSelectedNoteProxy.row();
-        m_noteView->animateAddedRow(QModelIndex(),row, row);
+        //int row = m_currentSelectedNoteProxy.row();
+        //m_noteView->animateAddedRow(QModelIndex(),row, row);
 
         qDebug() << "当前文件 :" << __FILE__ << "当前函数 :" << __FUNCTION__ << "当前行号 :" << __LINE__;
         //设置索引 m_currentSelectedNoteProxy 所在的页面为当前页面
