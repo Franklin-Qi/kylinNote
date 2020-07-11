@@ -52,7 +52,6 @@ Widget::Widget(QWidget *parent) :
     QLocale locale;
     //获取系统语言环境
     if ( locale.language() == QLocale::Chinese ) {
-        qDebug() << "####";
         translator->load(QString(":/translation/ukui_notebook_zh_CN.qm"));  //选择翻译文件
         QApplication::installTranslator(translator);
     }
@@ -68,7 +67,6 @@ Widget::~Widget()
 {
     for (auto it = m_editors.begin(); it!= m_editors.end();it++) {
         delete *it;
-        qDebug()<<"aa-----------------------";
     }
     m_editors.clear();
     delete ui;
