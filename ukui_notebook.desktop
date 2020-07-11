@@ -1,10 +1,13 @@
 [Desktop Entry]
-Name=Ukui Notebook
+Name=Kylin Notebook
 Name[zh_CN]=麒麟便签本
-GenericName=Ukui Notebook
+Name[tr_TR]=Not Defteri
+GenericName=Kylin Notebook
 GenericName[zh_CN]=麒麟便签本
-Comment=Ukui Notebook
+GenericName[tr_TR]=Kylin Not Defteri
+Comment=Kylin Notebook
 Comment[zh_CN]=Notebook
+Comment[tr_TR]=Not Defteri
 Keywords=guide;
 Exec=/usr/bin/ukui-notebook
 Icon=kylin-notebook

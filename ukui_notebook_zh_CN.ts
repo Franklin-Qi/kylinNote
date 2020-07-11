@@ -51,9 +51,9 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="widget.cpp" line="723"/>
-        <location filename="widget.cpp" line="1111"/>
-        <location filename="widget.cpp" line="1120"/>
+        <location filename="widget.cpp" line="725"/>
+        <location filename="widget.cpp" line="1113"/>
+        <location filename="widget.cpp" line="1122"/>
         <source>%1 records in total</source>
         <translatorcomment>%1条记录</translatorcomment>
         <translation>%1条记录</translation>
@@ -110,37 +110,37 @@
         <translation>新建</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="225"/>
+        <location filename="widget.cpp" line="227"/>
         <source>ukui-note</source>
         <translatorcomment>麒麟便签本</translatorcomment>
         <translation>麒麟便签本</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="836"/>
+        <location filename="widget.cpp" line="838"/>
         <source>Search</source>
         <translatorcomment>搜索</translatorcomment>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="451"/>
+        <location filename="widget.cpp" line="453"/>
         <source>Create New Note</source>
         <translatorcomment>新建便签</translatorcomment>
         <translation>新建便签</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="452"/>
+        <location filename="widget.cpp" line="454"/>
         <source>Delete Selected Note</source>
         <translatorcomment>删除</translatorcomment>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="453"/>
+        <location filename="widget.cpp" line="455"/>
         <source>Switch View</source>
         <translatorcomment>切换视图</translatorcomment>
         <translation>切换视图</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="454"/>
+        <location filename="widget.cpp" line="456"/>
         <source>Sort</source>
         <translatorcomment>排序</translatorcomment>
         <translation>排序</translation>
@@ -151,26 +151,26 @@
         <translation type="vanished">换肤</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="455"/>
+        <location filename="widget.cpp" line="457"/>
         <source>Exit</source>
         <translatorcomment>关闭</translatorcomment>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="456"/>
+        <location filename="widget.cpp" line="458"/>
         <source>Mini</source>
         <translatorcomment>最小化</translatorcomment>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="457"/>
+        <location filename="widget.cpp" line="459"/>
         <source>Menu</source>
         <translatorcomment>菜单</translatorcomment>
-        <translation>菜单</translation>
+        <translation type="unfinished">菜单</translation>
     </message>
     <message>
-        <location filename="widget.cpp" line="771"/>
-        <location filename="widget.cpp" line="813"/>
+        <location filename="widget.cpp" line="773"/>
+        <location filename="widget.cpp" line="815"/>
         <source>Welcome to use Kylin system, you will experience more intimate service.</source>
         <translatorcomment>欢迎使用优麒麟系统，您将体会到更贴心的服务。</translatorcomment>
         <translation>欢迎使用优麒麟系统，您将体会到更贴心的服务。</translation>
